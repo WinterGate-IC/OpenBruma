@@ -88,7 +88,6 @@ xfce4-whiskermenu-plugin
 
 # Theming / fonts
 papirus-icon-theme
-arc-gtk-theme
 ttf-dejavu
 ttf-liberation
 noto-fonts
@@ -116,7 +115,6 @@ zstd
 # Partition / recovery tools
 gparted
 testdisk
-photorec
 ddrescue
 smartmontools
 lsof
@@ -125,8 +123,7 @@ htop
 btop
 
 # Installer
-calamares
-# archinstall is python-based; install via pip in airootfs if needed
+archinstall
 
 # Misc
 sudo
