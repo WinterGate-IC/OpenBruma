@@ -4,7 +4,7 @@ $VBox = "C:\Program Files\Oracle\VirtualBox\VBoxManage.exe"
 $VMName = "OpenBruma-Build"
 $VMFolder = "G:\OpenBruma-VMs"
 $DiskPath = "$VMFolder\$VMName\$VMName.vdi"
-$ISO = "$VMFolder\archlinux-latest-x86_64.iso"
+$ISO = "G:\OpenBruma-VMs\archlinux-2026.11.01-x86_64.iso"
 
 if (-not (Test-Path $ISO)) {
     Write-Host "Arch ISO not found at $ISO. Download first: .\build\download-arch-iso.ps1"

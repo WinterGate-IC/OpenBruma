@@ -8,11 +8,12 @@ OpenBruma targets older 64-bit machines. For systems with limited RAM:
 
 ## Tuning steps
 1. Use the `linux-lts` kernel (default).
-2. Disable XFCE compositor: Settings -> Window Manager Tweaks -> Compositor -> off.
-3. Enable zram: `systemctl enable --now systemd-zram-generator` (install `zram-generator`).
-4. Remove unneeded packages: `pacman -Rns firefox` (replace with midori/links if desired).
-5. Disable unused services: bluetooth, cups, avahi-daemon.
-6. Use a lightweight file manager (thunar is already light).
+2. Enable zswap (enabled by default via kernel param `zswap.enabled=1 zswap.compressor=zstd`).
+3. Disable XFCE compositor: Settings -> Window Manager Tweaks -> Compositor -> off.
+4. Enable zram: `systemctl enable --now systemd-zram-generator` (install `zram-generator`).
+5. Remove unneeded packages: `pacman -Rns firefox` (replace with midori/links if desired).
+6. Disable unused services: bluetooth, cups, avahi-daemon.
+7. Use a lightweight file manager (thunar is already light).
 
 ## Documented test profile
 - VM: 1 vCPU, 1024 MB RAM, 20 GB disk, UEFI.
