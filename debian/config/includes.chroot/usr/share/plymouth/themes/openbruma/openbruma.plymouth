@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=OpenBruma
+Description=OpenBruma boot splash (WinterGateIC)
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/openbruma
+ScriptFile=/usr/share/plymouth/themes/openbruma/openbruma.script

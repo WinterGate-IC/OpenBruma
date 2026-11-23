@@ -12,11 +12,11 @@ EOF
 
 cat > /etc/os-release <<'EOF'
 NAME="OpenBruma"
-PRETTY_NAME="OpenBruma OSINT Edition 0.1 (Debian-based)"
+PRETTY_NAME="OpenBruma OSINT Edition 0.2 (Debian-based)"
 ID=openbruma
 ID_LIKE=debian
-VERSION_ID="0.1"
-VERSION="0.1 (trixie)"
+VERSION_ID="0.2"
+VERSION="0.2 (trixie)"
 HOME_URL="https://github.com/WinterGate-IC/OpenBruma"
 SUPPORT_URL="https://github.com/WinterGate-IC/OpenBruma/issues"
 BUG_REPORT_URL="https://github.com/WinterGate-IC/OpenBruma/issues"
@@ -68,19 +68,68 @@ cat > /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml <<'EO
 </channel>
 EOF
 
-# Calamares launcher for the desktop
-mkdir -p /etc/skel/Desktop
-cat > /etc/skel/Desktop/install-openbruma.desktop <<'EOF'
+# Calamares launchers: Guided (erase disk) and Custom (manual partitioning)
+mkdir -p /etc/skel/Desktop /usr/share/applications
+
+cat > /usr/share/applications/openbruma-installer-guided.desktop <<'EOF'
 [Desktop Entry]
 Type=Application
-Name=Install OpenBruma
-Comment=Install OpenBruma to disk
-Exec=sudo calamares
+Name=Install OpenBruma (Guided)
+Comment=Guided install: erase the selected disk and install OpenBruma
+Exec=pkexec calamares -c /etc/calamares-guided
 Icon=calamares
 Terminal=false
 Categories=System;
+StartupNotify=true
 EOF
-chmod +x /etc/skel/Desktop/install-openbruma.desktop
+
+cat > /usr/share/applications/openbruma-installer-custom.desktop <<'EOF'
+[Desktop Entry]
+Type=Application
+Name=Install OpenBruma (Custom)
+Comment=Custom install: manual partitioning and advanced options
+Exec=pkexec calamares
+Icon=calamares
+Terminal=false
+Categories=System;
+StartupNotify=true
+EOF
+
+cp /usr/share/applications/openbruma-installer-guided.desktop /etc/skel/Desktop/
+cp /usr/share/applications/openbruma-installer-custom.desktop /etc/skel/Desktop/
+chmod +x /etc/skel/Desktop/*.desktop
+
+# Guided Calamares config: copy shared modules, then apply the guided partition defaults
+if [ -d /etc/calamares/modules ]; then
+  mkdir -p /etc/calamares-guided/modules
+  cp -a /etc/calamares/modules/. /etc/calamares-guided/modules/ 2>/dev/null || true
+fi
+# Our guided partition defaults (overwrite the copied Debian module config)
+cat > /etc/calamares-guided/modules/partition.conf <<'EOF'
+---
+initialPartitioningChoice: eraseDisk
+initialSwapChoice: none
+defaultFileSystemType: ext4
+efiSystemPartition: /boot/efi
+userSwapChoices:
+  - none
+  - small
+  - suspend
+  - file
+drawNestedPartitions: false
+alwaysShowPartitionLabels: true
+allowZfsEncryption: true
+EOF
+
+# Ensure the default Calamares settings use OpenBruma branding
+if [ -f /etc/calamares/settings.conf ]; then
+  sed -i 's/^branding:.*/branding: openbruma/' /etc/calamares/settings.conf || true
+fi
+
+# Plymouth boot splash branding
+if command -v plymouth-set-default-theme >/dev/null 2>&1; then
+  plymouth-set-default-theme -R openbruma >/dev/null 2>&1 || true
+fi
 
 # Welcome script
 cat > /usr/local/bin/openbruma-welcome <<'EOF'
@@ -89,7 +138,9 @@ cat <<'WELCOME'
 ========================================
  OpenBruma OSINT Edition (WinterGateIC)
 ========================================
- Double-click "Install OpenBruma" to install.
+ Install options (desktop icons):
+   • Install OpenBruma (Guided)  - erase disk
+   • Install OpenBruma (Custom)  - manual partitioning
  Tools: nmap, wireshark, exiftool, binwalk,
  sleuthkit, forensics-all, hashcat, john,
  Firefox ESR, Thunderbird, LibreOffice.
@@ -100,21 +151,4 @@ chmod +x /usr/local/bin/openbruma-welcome
 
 # Ensure the live user's skel is applied on first boot by live-config
 echo "OpenBruma live setup complete"
-
-# Calamares branding (Debian package provides settings/modules; we override branding)
-if [ -f /etc/calamares/settings.conf ]; then
-  sed -i 's/^branding:.*/branding: openbruma/' /etc/calamares/settings.conf || true
-fi
-# Make sure Calamares starts in the live session with a menu entry
-mkdir -p /usr/share/applications
-cat > /usr/share/applications/openbruma-installer.desktop <<'EOF'
-[Desktop Entry]
-Type=Application
-Name=Install OpenBruma
-Comment=Install OpenBruma to disk
-Exec=sudo calamares
-Icon=calamares
-Terminal=false
-Categories=System;
-EOF
 

@@ -5,9 +5,13 @@
 ### Added
 - **Debian 13 (trixie) edition** built with `live-build` — now the primary
   OpenBruma OS.
-- **Calamares graphical installer** with OpenBruma branding (install to disk
-  from the live desktop).
-- XFCE desktop with LightDM autologin (live user `openbruma`).
+- **Two Calamares graphical installers:**
+  - **Guided** — auto-selects "erase disk", minimal clicks.
+  - **Custom** — manual partitioning and advanced options.
+- Fully branded Calamares: WinterGateIC logo, dark blue stylesheet, custom
+  QML slideshow, OpenBruma strings.
+- Branded Plymouth boot splash, LightDM greeter theme, `/etc/issue`,
+  `/etc/motd`, XFCE wallpaper, and desktop installer icons.
 - OSINT / investigative toolchain: nmap, masscan, dnsrecon, gobuster, dirb,
   whois, dnsutils, traceroute, mtr, tcpdump, Wireshark/tshark, httrack,
   w3m, lynx, exiftool, mat2, binwalk, foremost, scalpel, SleuthKit,

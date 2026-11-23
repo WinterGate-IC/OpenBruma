@@ -1,0 +1,45 @@
+/* OpenBruma Calamares stylesheet */
+QWidget {
+    background-color: #0f1826;
+    color: #dcecff;
+    font-family: "DejaVu Sans", "Noto Sans", sans-serif;
+    font-size: 10pt;
+}
+
+QPushButton {
+    background-color: #1e3a5f;
+    color: #eaf3ff;
+    border: 1px solid #4a90d9;
+    border-radius: 5px;
+    padding: 6px 16px;
+}
+QPushButton:hover { background-color: #2b5480; }
+QPushButton:pressed { background-color: #4a90d9; }
+QPushButton:disabled { color: #6b7c93; border-color: #33475f; }
+
+QLineEdit, QComboBox, QSpinBox, QTextEdit, QListWidget, QTreeWidget {
+    background-color: #13233a;
+    color: #eaf3ff;
+    border: 1px solid #2b4a72;
+    selection-background-color: #4a90d9;
+}
+
+QProgressBar {
+    background-color: #13233a;
+    border: 1px solid #2b4a72;
+    border-radius: 4px;
+    text-align: center;
+    color: #eaf3ff;
+}
+QProgressBar::chunk {
+    background-color: #4a90d9;
+    border-radius: 3px;
+}
+
+QScrollBar:vertical { background: #0f1826; width: 12px; }
+QScrollBar::handle:vertical { background: #2b4a72; border-radius: 6px; }
+QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0; }
+
+QLabel { color: #dcecff; }
+QGroupBox { border: 1px solid #2b4a72; border-radius: 6px; margin-top: 8px; }
+QGroupBox::title { color: #9fd0ff; subcontrol-origin: margin; left: 10px; padding: 0 4px; }

@@ -81,8 +81,11 @@ See `docs/DEBIAN.md`. Summary:
 - User: `openbruma` / `openbruma`
 - Root: `root` / `root`
 - Passwordless `sudo` for the live user.
-- Installer: **Calamares** (desktop icon "Install OpenBruma",
-  application menu entry, or run `sudo calamares`).
+- Installers (desktop icons + application menu):
+  - **Install OpenBruma (Guided)** — Calamares with "erase disk" preselected.
+  - **Install OpenBruma (Custom)** — Calamares with manual partitioning.
+  - From a terminal: `pkexec calamares` or
+    `pkexec calamares -c /etc/calamares-guided`.
 
 ## Philosophy and boundaries
 

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=PolicyKit Authentication Agent
+Exec=lxpolkit
+OnlyShowIn=XFCE;
+X-GNOME-Autostart-enabled=true
+

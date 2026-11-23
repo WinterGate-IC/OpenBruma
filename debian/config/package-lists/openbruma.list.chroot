@@ -32,6 +32,7 @@ papirus-icon-theme
 # Installer
 calamares
 calamares-settings-debian
+lxpolkit
 
 # OSINT / recon / network
 nmap
@@ -108,3 +109,5 @@ amd64-microcode
 live-boot
 live-config
 live-config-systemd
+plymouth
+plymouth-themes
