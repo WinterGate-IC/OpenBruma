@@ -3,7 +3,7 @@
 ## Debian edition (current)
 
 openbruma-amd64.hybrid.iso
-SHA-256: ce21663a009e5bf945b5925da84195c11ec31d2b97d119c82cff7a17c2e4260a
+SHA-256: a9c8bf0329e40a88a0777f4fac0b4f92b2169fdc82cd7ed82d9228d206b7503d
 Size: ~2.0 GB
 Base: Debian 13 (trixie) x86_64
 Installer: Calamares — Guided (erase disk) and Custom (manual partitioning)

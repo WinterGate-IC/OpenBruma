@@ -1,0 +1,20 @@
+#!/bin/sh
+# Brand the boot menus of the built ISO.
+# live-build runs this hook from inside the 'binary' directory.
+set -e
+
+for f in boot/grub/grub.cfg \
+         boot/grub/loopback.cfg \
+         isolinux/live.cfg \
+         isolinux/menu.cfg \
+         isolinux/stdmenu.cfg; do
+  if [ -f "$f" ]; then
+    sed -i \
+      -e 's/Live system/OpenBruma Live/g' \
+      -e 's/Boot menu/OpenBruma Boot Menu/g' \
+      -e 's/^menu title .*/menu title OpenBruma Boot Menu/' \
+      "$f" || true
+  fi
+done
+
+echo "OpenBruma boot menu branding applied"
