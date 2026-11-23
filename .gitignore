@@ -1,0 +1,27 @@
+# Build artifacts
+*.iso
+*.img
+*.vdi
+*.vmdk
+*.ova
+*.ovf
+work/
+out/
+openbruma-out/
+*.squashfs
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+*.key
+*.pem
+.env
+.env.local
+*.token
+
+# IDE
+.vscode/
+.idea/
+*.swp

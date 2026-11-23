@@ -1,0 +1,16 @@
+# Create a BIOS (legacy) test VM variant
+$VBox = "C:\Program Files\Oracle\VirtualBox\VBoxManage.exe"
+$VMName = "OpenBruma-Test-BIOS"
+$VMFolder = "G:\OpenBruma-VMs"
+$DiskPath = "$VMFolder\$VMName\$VMName.vdi"
+
+& $VBox createvm --name $VMName --ostype "ArchLinux_64" --register --basefolder $VMFolder
+& $VBox modifyvm $VMName --memory 4096 --cpus 2 --vram 128 --graphicscontroller vboxsvga
+& $VBox modifyvm $VMName --firmware bios --boot1 dvd --boot2 disk
+& $VBox modifyvm $VMName --nic1 nat --nictype1 82540EM
+& $VBox createmedium disk --filename $DiskPath --size 20480 --format VDI --variant Standard
+& $VBox storagectl $VMName --name "SATA" --add sata --controller IntelAhci
+& $VBox storageattach $VMName --storagectl "SATA" --port 0 --device 0 --type hdd --medium $DiskPath
+& $VBox storagectl $VMName --name "IDE" --add ide
+
+Write-Host "BIOS test VM created: $VMName"

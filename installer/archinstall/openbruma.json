@@ -1,0 +1,19 @@
+# OpenBruma archinstall profile (fallback installer)
+# Usage: archinstall --config /usr/share/openbruma/archinstall.json
+{
+  "archinstall-language": "English",
+  "audio": "pipewire",
+  "bootloader": "grub",
+  "desktop-environment": "xfce4",
+  "gfx_driver": "All open-source",
+  "hostname": "openbruma",
+  "kernels": ["linux-lts"],
+  "mirror-region": "Worldwide",
+  "nic": { "dhcp": true, "iface": null },
+  "ntp": true,
+  "packages": ["firefox", "vim", "nano", "git", "networkmanager"],
+  "profile": "desktop",
+  "swap": true,
+  "timezone": "UTC",
+  "version": "latest"
+}

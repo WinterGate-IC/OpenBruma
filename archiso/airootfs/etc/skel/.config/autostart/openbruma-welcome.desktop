@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=OpenBruma Welcome
+Exec=/usr/local/bin/openbruma-welcome
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true

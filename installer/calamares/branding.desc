@@ -1,0 +1,30 @@
+---
+componentName: openbruma
+
+welcomeStyleCalamares: false
+welcomeExpandingLogo: true
+windowExpanding: normal
+
+windowSize: 800px,520px
+
+windowTitle: "Install OpenBruma"
+
+strings:
+  productName: "OpenBruma"
+  shortProductName: "OpenBruma"
+  version: "0.1"
+  shortVersion: "0.1"
+  versionedName: "OpenBruma 0.1"
+  bootloaderEntryName: "OpenBruma"
+
+images:
+  productLogo: "logo.png"
+  productIcon: "icon.png"
+  productWelcome: "welcome.png"
+
+slideshow: "show.qml"
+
+style:
+  sidebarBackground: "#1e3a5f"
+  sidebarText: "#ffffff"
+  sidebarTextSelect: "#4a90d9"

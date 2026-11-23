@@ -1,0 +1,146 @@
+# OpenBruma package list (x86_64)
+# Base
+base
+base-devel
+linux-lts
+linux-lts-headers
+linux
+linux-headers
+linux-firmware
+mkinitcpio
+mkinitcpio-archiso
+syslinux
+grub
+efibootmgr
+dosfstools
+mtools
+parted
+gptfdisk
+btrfs-progs
+e2fsprogs
+xfsprogs
+ntfs-3g
+exfatprogs
+f2fs-tools
+
+# Boot / init
+systemd
+systemd-sysvcompat
+dracut
+
+# Shell / core utils
+bash
+zsh
+coreutils
+util-linux
+procps-ng
+psmisc
+iproute2
+iputils
+inetutils
+which
+less
+man-db
+man-pages
+texinfo
+
+# Networking
+networkmanager
+network-manager-applet
+wpa_supplicant
+iwd
+dhcpcd
+openssh
+curl
+wget
+rsync
+
+# Audio
+pipewire
+pipewire-alsa
+pipewire-pulse
+pipewire-jack
+wireplumber
+alsa-utils
+pavucontrol
+
+# Graphics / Xorg
+xorg-server
+xorg-xinit
+xorg-xrandr
+mesa
+vulkan-icd-loader
+libva
+libva-mesa-driver
+intel-media-driver
+
+# Desktop (XFCE)
+xfce4
+xfce4-goodies
+lightdm
+lightdm-gtk-greeter
+thunar
+thunar-archive-plugin
+xfce4-terminal
+xfce4-screenshooter
+xfce4-taskmanager
+xfce4-whiskermenu-plugin
+
+# Theming / fonts
+papirus-icon-theme
+arc-gtk-theme
+ttf-dejavu
+ttf-liberation
+noto-fonts
+noto-fonts-emoji
+fontconfig
+
+# Browser
+firefox
+
+# Apps
+mousepad
+ristretto
+parole
+file-roller
+engrampa
+
+# Archive tools
+zip
+unzip
+p7zip
+tar
+xz
+zstd
+
+# Partition / recovery tools
+gparted
+testdisk
+photorec
+ddrescue
+smartmontools
+lsof
+strace
+htop
+btop
+
+# Installer
+calamares
+# archinstall is python-based; install via pip in airootfs if needed
+
+# Misc
+sudo
+polkit
+xdg-utils
+xdg-user-dirs
+gvfs
+gvfs-mtp
+tumbler
+ffmpegthumbnailer
+os-prober
+ntfs-3g
+
+# Bruma helpers
+git
+nano
+vim

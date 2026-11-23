@@ -1,0 +1,11 @@
+NAME="OpenBruma"
+PRETTY_NAME="OpenBruma 0.1 (Arch-based)"
+ID=openbruma
+ID_LIKE=arch
+BUILD_ID=rolling
+ANSI_COLOR="38;2;90;140;200"
+HOME_URL="https://github.com/WinterGate-IC/OpenBruma"
+DOCUMENTATION_URL="https://github.com/WinterGate-IC/OpenBruma/tree/main/docs"
+SUPPORT_URL="https://github.com/WinterGate-IC/OpenBruma/issues"
+BUG_REPORT_URL="https://github.com/WinterGate-IC/OpenBruma/issues"
+LOGO=openbruma

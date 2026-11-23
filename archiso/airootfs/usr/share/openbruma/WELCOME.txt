@@ -1,0 +1,11 @@
+Welcome to OpenBruma!
+
+OpenBruma is a lightweight Arch-based Linux distribution.
+- Based on Arch Linux (x86_64 only).
+- Default user: live / live
+- Root password: root (live media only)
+- Installer: Calamares (if available) or archinstall
+
+To install: run 'calamares' from the menu, or 'archinstall' in a terminal.
+
+Documentation: https://github.com/WinterGate-IC/OpenBruma

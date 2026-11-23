@@ -1,0 +1,10 @@
+#!/bin/bash
+# OpenBruma welcome (live session)
+if [ -f /usr/share/openbruma/WELCOME.txt ]; then
+  cat /usr/share/openbruma/WELCOME.txt
+fi
+EOF
+# show in terminal if possible
+if command -v xfce4-terminal >/dev/null; then
+  xfce4-terminal -e "cat /usr/share/openbruma/WELCOME.txt" &
+fi
