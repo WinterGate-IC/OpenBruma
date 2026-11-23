@@ -1,0 +1,120 @@
+#!/bin/sh
+# OpenBruma live session setup (runs in chroot during build)
+set -e
+
+# Hostname / branding
+echo "openbruma" > /etc/hostname
+cat > /etc/hosts <<'EOF'
+127.0.0.1 localhost
+127.0.1.1 openbruma
+::1       localhost
+EOF
+
+cat > /etc/os-release <<'EOF'
+NAME="OpenBruma"
+PRETTY_NAME="OpenBruma OSINT Edition 0.1 (Debian-based)"
+ID=openbruma
+ID_LIKE=debian
+VERSION_ID="0.1"
+VERSION="0.1 (trixie)"
+HOME_URL="https://github.com/WinterGate-IC/OpenBruma"
+SUPPORT_URL="https://github.com/WinterGate-IC/OpenBruma/issues"
+BUG_REPORT_URL="https://github.com/WinterGate-IC/OpenBruma/issues"
+EOF
+
+# Live user (created by live-config username=openbruma at boot); create for build-time convenience
+if ! id openbruma >/dev/null 2>&1; then
+  useradd -m -G sudo,audio,video,netdev -s /bin/bash openbruma || true
+fi
+echo "openbruma:openbruma" | chpasswd || true
+echo "root:root" | chpasswd || true
+
+# Passwordless sudo for live user
+mkdir -p /etc/sudoers.d
+echo "openbruma ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/openbruma
+chmod 440 /etc/sudoers.d/openbruma
+
+# Autologin (lightdm) and XFCE session
+mkdir -p /etc/lightdm/lightdm.conf.d
+cat > /etc/lightdm/lightdm.conf.d/50-openbruma-autologin.conf <<'EOF'
+[Seat:*]
+autologin-user=openbruma
+autologin-user-timeout=0
+user-session=xfce
+greeter-session=lightdm-gtk-greeter
+EOF
+
+# Enable services
+systemctl enable NetworkManager || true
+systemctl enable lightdm || true
+systemctl enable bluetooth || true
+
+# XFCE defaults
+mkdir -p /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml
+cat > /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml <<'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<channel name="xfce4-desktop" version="1.0">
+  <property name="backdrop" type="empty">
+    <property name="screen0" type="empty">
+      <property name="monitor0" type="empty">
+        <property name="workspace0" type="empty">
+          <property name="color-style" type="int" value="0"/>
+          <property name="image-style" type="int" value="5"/>
+          <property name="last-image" type="string" value="/usr/share/backgrounds/openbruma-wallpaper.png"/>
+        </property>
+      </property>
+    </property>
+  </property>
+</channel>
+EOF
+
+# Calamares launcher for the desktop
+mkdir -p /etc/skel/Desktop
+cat > /etc/skel/Desktop/install-openbruma.desktop <<'EOF'
+[Desktop Entry]
+Type=Application
+Name=Install OpenBruma
+Comment=Install OpenBruma to disk
+Exec=sudo calamares
+Icon=calamares
+Terminal=false
+Categories=System;
+EOF
+chmod +x /etc/skel/Desktop/install-openbruma.desktop
+
+# Welcome script
+cat > /usr/local/bin/openbruma-welcome <<'EOF'
+#!/bin/sh
+cat <<'WELCOME'
+========================================
+ OpenBruma OSINT Edition (WinterGateIC)
+========================================
+ Double-click "Install OpenBruma" to install.
+ Tools: nmap, wireshark, exiftool, binwalk,
+ sleuthkit, forensics-all, hashcat, john,
+ Firefox ESR, Thunderbird, LibreOffice.
+ Live user: openbruma / openbruma
+WELCOME
+EOF
+chmod +x /usr/local/bin/openbruma-welcome
+
+# Ensure the live user's skel is applied on first boot by live-config
+echo "OpenBruma live setup complete"
+
+# Calamares branding (Debian package provides settings/modules; we override branding)
+if [ -f /etc/calamares/settings.conf ]; then
+  sed -i 's/^branding:.*/branding: openbruma/' /etc/calamares/settings.conf || true
+fi
+# Make sure Calamares starts in the live session with a menu entry
+mkdir -p /usr/share/applications
+cat > /usr/share/applications/openbruma-installer.desktop <<'EOF'
+[Desktop Entry]
+Type=Application
+Name=Install OpenBruma
+Comment=Install OpenBruma to disk
+Exec=sudo calamares
+Icon=calamares
+Terminal=false
+Categories=System;
+EOF
+

@@ -1,34 +1,44 @@
 # OpenBruma
 
-OpenBruma is a lightweight, full-desktop Linux distribution aimed at older
-64-bit machines and small servers. It boots live from USB, installs to
-HDD/SSD, and ships a usable XFCE desktop out of the box.
+OpenBruma is the official Linux OS of the **WinterGate Intelligence Collective**
+(WinterGateIC) — a lightweight, full-desktop distribution built for lawful
+OSINT, investigative work, defensive security research, and small servers.
+
+It boots live from USB, installs to HDD/SSD with a **graphical installer
+(Calamares)**, and ships a usable XFCE desktop out of the box.
 
 ## Base
 
-OpenBruma is **Arch-based**. It is built with `archiso` on top of the Arch
-Linux package set and repositories. It is **not** a from-scratch kernel or
-userspace build, and it does not ship its own package manager or init
-system beyond what Arch provides (pacman + systemd).
+OpenBruma is **Debian-based** (Debian 13 "trixie", x86_64), built with
+`live-build`. It is **not** a from-scratch kernel or userspace build.
+
+An earlier **Arch-based** prototype (built with `archiso`) is retained under
+`archiso/` for reference. Arch does not support 32-bit x86 and does not ship
+Calamares in its official repositories, which is why the current OS is built on
+Debian.
 
 ## 32-bit support
 
-The Arch edition of OpenBruma supports **x86_64 only**. Arch Linux does not
-support 32-bit x86, and OpenBruma does not pretend otherwise. If 32-bit
-legacy hardware must be supported, plan a separate **OpenBruma Legacy**
-edition based on Debian i386 or Buildroot. That edition is out of scope for
-this repository.
+The current OpenBruma x86_64 edition supports 64-bit hardware only. A future
+**OpenBruma Legacy** edition (Debian i386 or Buildroot) is planned for older
+32-bit machines.
 
-## Features (v1)
+## Features
 
-- Arch Linux x86_64 base
-- XFCE desktop (low resource use)
-- `linux-lts` kernel by default, with `linux` (standard) available
-- Calamares installer when achievable, otherwise `archinstall` + docs
-- NetworkManager, PipeWire, common firmware, Mesa, Xorg, fonts
-- Browser, terminal, archive tools, partition tools, recovery tools
-- OpenBruma branding (wallpaper, GRUB/systemd-boot theme, hostname)
-- UEFI and legacy BIOS boot
+- Debian 13 x86_64 base
+- **Calamares graphical installer** (install to disk like Kali/Ubuntu)
+- XFCE desktop with LightDM autologin
+- Linux kernel 6.12 (Debian)
+- NetworkManager, PipeWire, PipeWire-Pulse
+- Firefox ESR, Thunderbird, LibreOffice
+- Open-source Mesa/Xorg drivers and common redistributable firmware
+- OSINT / investigative tooling: nmap, masscan, dnsrecon, gobuster, dirb,
+  whois, dnsutils, traceroute, mtr, tcpdump, Wireshark/tshark, httrack,
+  w3m/lynx, exiftool, mat2, binwalk, foremost, scalpel, SleuthKit,
+  forensics-all, forensics-extra, john, hashcat, hydra
+- Partition/recovery: GParted, testdisk, gddrescue, smartmontools
+- UEFI (with Secure Boot shim) and legacy BIOS boot
+- OpenBruma / WinterGateIC branding
 
 ## Repository layout
 
@@ -36,37 +46,53 @@ this repository.
 OpenBruma/
   README.md
   LICENSE
-  build/            # build orchestration (host + VM)
-  archiso/          # archiso profile (profiledef.sh, packages, airootfs)
-  branding/         # logos, wallpapers, themes
-  installer/        # Calamares / archinstall configuration
-  packages/         # package lists and package notes
-  scripts/          # helper scripts (run inside build VM)
+  debian/           # live-build profile for the current Debian edition
+    auto/config
+    config/
+      package-lists/
+      includes.chroot/
+      hooks/live/
+    build.sh
+  build/            # host helpers (VirtualBox VM creation, ISO download)
+  archiso/          # legacy Arch prototype (reference)
+  branding/         # logos, wallpapers
+  installer/        # Arch/Calamares reference configs
+  packages/         # package notes
+  scripts/          # Arch build helpers (legacy)
   docs/             # documentation
   .github/workflows/# CI / reproducible build notes
   CHANGELOG.md
   SECURITY.md
 ```
 
-## Quick start (build)
+## Build (Debian edition)
 
-See `docs/BUILD.md`. Summary:
+See `docs/DEBIAN.md`. Summary:
 
-1. Install Arch Linux in a VirtualBox VM (build VM).
-2. Inside the VM, install build deps: `git base-devel archiso ...`.
-3. Clone/copy this repo into the VM.
-4. Run `scripts/build-iso.sh`.
-5. Test the resulting ISO in a second VM.
+1. Prepare a Debian 13 environment with `live-build` and build tools.
+2. Install build dependencies:
+   `apt-get install live-build debootstrap squashfs-tools xorriso isolinux syslinux-common grub-efi-amd64-bin grub-pc-bin mtools dosfstools`
+3. Copy this repo into the environment.
+4. Run `REPO_DIR=/root/OpenBruma bash debian/build.sh`.
+5. The ISO is written to `OUT_DIR` (default `/root/openbruma-debian-out`).
 
-## Safety
+## Live credentials
 
-- Only disposable VirtualBox VMs are used for building/testing.
-- Never run `dd` against a Windows physical disk.
-- No secrets, keys, or private data are committed.
-- No proprietary firmware/drivers unless redistribution is clearly allowed.
+- User: `openbruma` / `openbruma`
+- Root: `root` / `root`
+- Passwordless `sudo` for the live user.
+- Installer: **Calamares** (desktop icon "Install OpenBruma",
+  application menu entry, or run `sudo calamares`).
+
+## Philosophy and boundaries
+
+OpenBruma is built for lawful, documented, proportional investigative work.
+It is not a hacking or vigilante toolkit. See `SECURITY.md` and the
+WinterGateIC public notice for the collective's operating boundaries.
 
 ## License
 
-See `LICENSE`. OpenBruma aggregates packages under their own licenses
-(GPL, MIT, BSD, etc.). License obligations are documented in
-`docs/LICENSES.md`.
+Project scripts/configs/branding: MIT (see `LICENSE`). Bundled Debian packages
+retain their own licenses; see `docs/LICENSES.md`. The WinterGateIC logo is a
+copyrighted mark of WinterGate IC and is used here for official OpenBruma
+builds only.

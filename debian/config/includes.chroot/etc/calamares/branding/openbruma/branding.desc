@@ -1,0 +1,30 @@
+---
+componentName: openbruma
+
+welcomeStyleCalamares: false
+welcomeExpandingLogo: true
+windowExpanding: normal
+windowSize: 860px,560px
+windowTitle: "Install OpenBruma"
+
+strings:
+  productName: "OpenBruma"
+  shortProductName: "OpenBruma"
+  version: "0.1"
+  shortVersion: "0.1"
+  versionedName: "OpenBruma 0.1 (OSINT Edition)"
+  bootloaderEntryName: "OpenBruma"
+  productUrl: "https://github.com/WinterGate-IC/OpenBruma"
+  supportUrl: "https://github.com/WinterGate-IC/OpenBruma/issues"
+  releaseNotesUrl: "https://github.com/WinterGate-IC/OpenBruma/releases"
+
+images:
+  productLogo: "logo.png"
+  productIcon: "icon.png"
+  productWelcome: "welcome.png"
+
+style:
+  sidebarBackground: "#0b1220"
+  sidebarText: "#dcecff"
+  sidebarTextSelect: "#4a90d9"
+  sidebarTextHighlight: "#1e3a5f"
