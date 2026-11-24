@@ -36,6 +36,17 @@ mkdir -p /etc/sudoers.d
 echo "openbruma ALL=(ALL:ALL) NOPASSWD:ALL" > /etc/sudoers.d/openbruma
 chmod 440 /etc/sudoers.d/openbruma
 
+# Let the live user start Calamares through pkexec without an extra prompt.
+mkdir -p /etc/polkit-1/rules.d
+cat > /etc/polkit-1/rules.d/49-openbruma-live.rules <<'EOF'
+polkit.addRule(function(action, subject) {
+  if (action.id == "org.freedesktop.policykit.exec" &&
+      subject.user == "openbruma") {
+    return polkit.Result.YES;
+  }
+});
+EOF
+
 # Autologin (lightdm) and XFCE session
 mkdir -p /etc/lightdm/lightdm.conf.d
 cat > /etc/lightdm/lightdm.conf.d/50-openbruma-autologin.conf <<'EOF'
@@ -57,15 +68,61 @@ systemctl enable irqbalance || true
 
 # XFCE defaults live in /etc/skel via includes.chroot.
 
-# Calamares launchers: Guided (erase disk) and Custom (manual partitioning)
-mkdir -p /etc/skel/Desktop /usr/share/applications
+# Calamares launchers: Guided (erase disk) and Custom (manual partitioning).
+# Calamares 3.3 needs a full application-data directory (qml/) when -c is used,
+# so instead of a second config tree we swap one partition profile and run the
+# stock /etc/calamares tree. The wrappers run as root via pkexec.
+mkdir -p /etc/skel/Desktop /usr/share/applications \
+         /usr/share/openbruma/calamares /usr/local/bin
+
+cat > /usr/share/openbruma/calamares/partition-guided.conf <<'EOF'
+---
+initialPartitioningChoice: eraseDisk
+initialSwapChoice: none
+defaultFileSystemType: ext4
+efiSystemPartition: /boot/efi
+drawNestedPartitions: false
+alwaysShowPartitionLabels: true
+EOF
+
+cat > /usr/share/openbruma/calamares/partition-custom.conf <<'EOF'
+---
+initialPartitioningChoice: manual
+defaultFileSystemType: ext4
+efiSystemPartition: /boot/efi
+drawNestedPartitions: true
+alwaysShowPartitionLabels: true
+EOF
+
+cat > /usr/local/bin/openbruma-install-guided <<'EOF'
+#!/bin/sh
+# Guided install: erase the selected disk. Call via pkexec.
+set -e
+[ "$(id -u)" = "0" ] || { echo "openbruma-install-guided must run as root" >&2; exit 1; }
+install -d -m 0755 /etc/calamares/modules
+install -m 0644 /usr/share/openbruma/calamares/partition-guided.conf \
+  /etc/calamares/modules/partition.conf
+exec calamares
+EOF
+
+cat > /usr/local/bin/openbruma-install-custom <<'EOF'
+#!/bin/sh
+# Custom install: manual partitioning. Call via pkexec.
+set -e
+[ "$(id -u)" = "0" ] || { echo "openbruma-install-custom must run as root" >&2; exit 1; }
+install -d -m 0755 /etc/calamares/modules
+install -m 0644 /usr/share/openbruma/calamares/partition-custom.conf \
+  /etc/calamares/modules/partition.conf
+exec calamares
+EOF
+chmod 0755 /usr/local/bin/openbruma-install-guided /usr/local/bin/openbruma-install-custom
 
 cat > /usr/share/applications/openbruma-installer-guided.desktop <<'EOF'
 [Desktop Entry]
 Type=Application
 Name=Install OpenBruma (Guided)
 Comment=Guided install: erase the selected disk and install OpenBruma
-Exec=pkexec calamares -c /etc/calamares-guided
+Exec=pkexec /usr/local/bin/openbruma-install-guided
 Icon=calamares
 Terminal=false
 Categories=System;
@@ -77,7 +134,7 @@ cat > /usr/share/applications/openbruma-installer-custom.desktop <<'EOF'
 Type=Application
 Name=Install OpenBruma (Custom)
 Comment=Custom install: manual partitioning and advanced options
-Exec=pkexec calamares
+Exec=pkexec /usr/local/bin/openbruma-install-custom
 Icon=calamares
 Terminal=false
 Categories=System;
@@ -90,6 +147,14 @@ cp /usr/share/applications/openbruma-themes.desktop /etc/skel/Desktop/
 cp /usr/share/applications/umbraforge.desktop /etc/skel/Desktop/WIC-UmbraForge.desktop 2>/dev/null || true
 chmod +x /etc/skel/Desktop/*.desktop
 ln -sfn /usr/share/backgrounds/openbruma /etc/skel/Desktop/Wallpapers
+
+# The live user already exists, so its home was created before the desktop
+# entries above. Mirror skel into it or the installers will not be visible.
+if id openbruma >/dev/null 2>&1; then
+  mkdir -p /home/openbruma/Desktop
+  cp -a /etc/skel/Desktop/. /home/openbruma/Desktop/ 2>/dev/null || true
+  chown -R openbruma:openbruma /home/openbruma/Desktop 2>/dev/null || true
+fi
 
 # Debian-style bootloader + display manager for Calamares. The stock Debian
 # module configs assume Arch-style kernel names, which would install an
@@ -118,43 +183,26 @@ basicSetup: false
 sysconfigSetup: false
 EOF
 
-# Guided Calamares config: clone the default config tree, then apply the
-# guided partition defaults. A config dir must contain settings.conf and the
-# branding tree, otherwise `calamares -c /etc/calamares-guided` aborts.
-if [ -f /etc/calamares/settings.conf ]; then
-  mkdir -p /etc/calamares-guided
-  cp -a /etc/calamares/settings.conf /etc/calamares-guided/settings.conf
-fi
-if [ -d /etc/calamares/modules ]; then
-  mkdir -p /etc/calamares-guided/modules
-  cp -a /etc/calamares/modules/. /etc/calamares-guided/modules/ 2>/dev/null || true
-fi
-if [ -d /etc/calamares/branding ]; then
-  ln -sfn /etc/calamares/branding /etc/calamares-guided/branding
-fi
-# Our guided partition defaults (overwrite the copied Debian module config)
-cat > /etc/calamares-guided/modules/partition.conf <<'EOF'
+# Security: the live session account (password openbruma, passwordless sudo)
+# must not survive into an installed system. Remove it during installation.
+cat > /etc/calamares/modules/shellprocess-livecleanup.conf <<'EOF'
 ---
-initialPartitioningChoice: eraseDisk
-initialSwapChoice: none
-defaultFileSystemType: ext4
-efiSystemPartition: /boot/efi
-userSwapChoices:
-  - none
-  - small
-  - suspend
-  - file
-drawNestedPartitions: false
-alwaysShowPartitionLabels: true
-allowZfsEncryption: false
+dontChroot: false
+timeout: 30
+script:
+  - "userdel -r openbruma >/dev/null 2>&1 || true"
+  - "rm -f /etc/sudoers.d/openbruma"
+  - "rm -f /etc/polkit-1/rules.d/49-openbruma-live.rules"
+  - "rm -f /etc/lightdm/lightdm.conf.d/50-openbruma-autologin.conf"
 EOF
+
+if [ -f /etc/calamares/settings.conf ] && ! grep -q 'shellprocess@livecleanup' /etc/calamares/settings.conf; then
+  sed -i '/^- exec:/,/^- show:/ s/^  - users$/  - users\n  - shellprocess@livecleanup/' /etc/calamares/settings.conf || true
+fi
 
 # Ensure the default Calamares settings use OpenBruma branding
 if [ -f /etc/calamares/settings.conf ]; then
   sed -i 's/^branding:.*/branding: openbruma/' /etc/calamares/settings.conf || true
-fi
-if [ -f /etc/calamares-guided/settings.conf ]; then
-  sed -i 's/^branding:.*/branding: openbruma/' /etc/calamares-guided/settings.conf || true
 fi
 
 # Plymouth boot splash branding
