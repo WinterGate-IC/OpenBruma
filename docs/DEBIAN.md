@@ -39,7 +39,20 @@ The script runs `lb clean --purge`, `lb build`, copies the resulting
 - `debian/config/package-lists/openbruma.list.chroot` — package list.
 - `debian/config/includes.chroot/` — branding, Calamares branding, skel.
 - `debian/config/hooks/live/0050-openbruma-live.hook.chroot` — live user,
-  autologin, hostname, sudo, welcome, Calamares branding.
+  autologin, hostname, sudo, welcome, Calamares branding, installer wrappers,
+  installed-system cleanup.
+
+## Installers
+
+Two launchers ship on the desktop and in the menu:
+
+- `openbruma-install-guided` writes an `eraseDisk` partition profile to
+  `/etc/calamares/modules/partition.conf` and starts Calamares.
+- `openbruma-install-custom` writes a `manual` profile instead.
+
+Both wrappers run through `pkexec`; a polkit rule allows the live user without
+an extra password prompt. Running Calamares with `-c` is avoided because
+Calamares 3.3 requires a full application-data directory (`qml/`) in that case.
 
 ## Boot modes
 

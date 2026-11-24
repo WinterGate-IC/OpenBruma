@@ -81,11 +81,13 @@ See `docs/DEBIAN.md`. Summary:
 - User: `openbruma` / `openbruma`
 - Root: `root` / `root`
 - Passwordless `sudo` for the live user.
+- The live account, its sudoers entry and the autologin config are removed
+  from the target system during installation.
 - Installers (desktop icons + application menu):
-  - **Install OpenBruma (Guided)** — Calamares with "erase disk" preselected.
-  - **Install OpenBruma (Custom)** — Calamares with manual partitioning.
-  - From a terminal: `pkexec calamares` or
-    `pkexec calamares -c /etc/calamares-guided`.
+  - **Install OpenBruma (Guided)** - Calamares with "erase disk" preselected.
+  - **Install OpenBruma (Custom)** - Calamares with manual partitioning.
+  - From a terminal: `sudo /usr/local/bin/openbruma-install-guided`
+    or `sudo /usr/local/bin/openbruma-install-custom`.
 
 ## Philosophy and boundaries
 
