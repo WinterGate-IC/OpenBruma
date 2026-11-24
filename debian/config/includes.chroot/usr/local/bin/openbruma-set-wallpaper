@@ -1,0 +1,43 @@
+#!/bin/bash
+# Set the OpenBruma wallpaper on every XFCE monitor/workspace.
+set -u
+
+WALL="${1:-/usr/share/backgrounds/openbruma-wallpaper.png}"
+[ -f "$WALL" ] || WALL="/usr/share/backgrounds/openbruma/openbruma-neo-noir.png"
+[ -f "$WALL" ] || exit 0
+
+# Wait for the XFCE settings daemon and xfdesktop.
+sleep 3
+for _ in 1 2 3 4 5 6 7 8 9 10; do
+  xfconf-query -c xfce4-desktop -l >/dev/null 2>&1 && break
+  sleep 0.5
+done
+
+# Detect the real monitor names (VirtualBox reports e.g. "Virtual-1").
+mons="$(xrandr --listmonitors 2>/dev/null | awk 'NR>1 {print $NF}')"
+[ -n "$mons" ] || mons="Virtual-1 VBoxVGA-1 VMSVGA-1 VGA-1 DVI-1 HDMI-1 eDP-1 LVDS-1 monitor0"
+
+set_prop() {
+  # $1 = property path, $2 = type, $3 = value
+  xfconf-query -c xfce4-desktop -p "$1" -n -t "$2" -s "$3" 2>/dev/null \
+    || xfconf-query -c xfce4-desktop -p "$1" -s "$3" 2>/dev/null || true
+}
+
+for m in $mons; do
+  base="/backdrop/screen0/monitor${m}/workspace0"
+  set_prop "$base/change-background" bool true
+  set_prop "$base/last-image" string "$WALL"
+  set_prop "$base/image-style" int 5
+done
+
+# Update any existing backdrop properties too (renamed monitors).
+xfconf-query -c xfce4-desktop -l 2>/dev/null \
+  | grep '/workspace[0-9]*/last-image' \
+  | while IFS= read -r p; do
+      [ -n "$p" ] && xfconf-query -c xfce4-desktop -p "$p" -s "$WALL" 2>/dev/null || true
+    done
+xfconf-query -c xfce4-desktop -l 2>/dev/null \
+  | grep '/workspace[0-9]*/change-background' \
+  | while IFS= read -r p; do
+      [ -n "$p" ] && xfconf-query -c xfce4-desktop -p "$p" -s true 2>/dev/null || true
+    done

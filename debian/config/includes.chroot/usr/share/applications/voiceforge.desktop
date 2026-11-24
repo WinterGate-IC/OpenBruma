@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=VoiceForge
+Comment=Offline local TTS studio by WinterGateIC
+Exec=openbruma-wic-app voiceforge
+Icon=openbruma-logo
+Terminal=false
+Categories=WIC;AudioVideo;
+

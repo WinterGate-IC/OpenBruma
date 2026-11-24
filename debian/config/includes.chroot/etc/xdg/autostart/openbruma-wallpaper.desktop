@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=OpenBruma Wallpaper
+Exec=/usr/local/bin/openbruma-set-wallpaper
+Hidden=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true
+OnlyShowIn=XFCE;
+

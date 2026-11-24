@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=WIC Portal
+Comment=WinterGateIC member portal
+Exec=openbruma-wic-app portal
+Icon=openbruma-logo
+Terminal=false
+Categories=WIC;Network;
+

@@ -1,0 +1,55 @@
+#!/bin/bash
+# Launch or install WinterGateIC apps from the WIC Apps menu.
+set -u
+
+cmd="${1:-}"
+
+case "$cmd" in
+  umbraforge)
+    if command -v umbraforge >/dev/null 2>&1; then
+      exec umbraforge
+    fi
+    if [ -f "$HOME/UmbraForge/src/umbraforge/__main__.py" ]; then
+      cd "$HOME/UmbraForge/src" && exec python3 -m umbraforge
+    fi
+    title="UmbraForge"
+    msg="UmbraForge is WinterGateIC's offline layered image and wallpaper studio.\n\nIt is not bundled in the live ISO to keep the download small.\nOpen the releases page to install it?"
+    url="https://github.com/WinterGate-IC/UmbraForge/releases"
+    ;;
+  voiceforge)
+    if command -v voiceforge >/dev/null 2>&1; then
+      exec voiceforge
+    fi
+    title="VoiceForge"
+    msg="VoiceForge is WinterGateIC's offline local TTS studio.\n\nOpen the releases page to install it?"
+    url="https://github.com/WinterGate-IC/VoiceForge/releases"
+    ;;
+  ominis)
+    title="Ominis OSINT"
+    msg="Ominis OSINT is a web OSINT hunter by WinterGateIC.\n\nOpen the project page to download it?"
+    url="https://github.com/AnonCatalyst/Ominis-OSINT"
+    ;;
+  coeus)
+    title="Coeus OSINT ToolBox"
+    msg="Coeus is WinterGateIC's OSINT toolbox.\n\nOpen the project page to download it?"
+    url="https://github.com/AnonCatalyst/Coeus-OSINT-ToolBox"
+    ;;
+  portal)
+    exec firefox "https://wintergate.org/portal.html"
+    ;;
+  *)
+    title="WIC Apps"
+    msg="Open the WinterGateIC portal to browse all tools?"
+    url="https://wintergate.org/portal.html"
+    ;;
+esac
+
+if command -v zenity >/dev/null 2>&1; then
+  if zenity --question --title="$title" --text="$msg" \
+       --ok-label="Open" --cancel-label="Close" 2>/dev/null; then
+    exec firefox "$url"
+  fi
+  exit 0
+fi
+
+exec firefox "$url"

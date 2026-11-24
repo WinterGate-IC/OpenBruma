@@ -1,45 +1,49 @@
-/* OpenBruma Calamares stylesheet */
+/* OpenBruma Calamares stylesheet — WIC neo-noir */
 QWidget {
-    background-color: #0f1826;
+    background-color: #0a0c0f;
     color: #dcecff;
-    font-family: "DejaVu Sans", "Noto Sans", sans-serif;
+    font-family: "Inter", "DejaVu Sans", sans-serif;
     font-size: 10pt;
 }
 
 QPushButton {
-    background-color: #1e3a5f;
-    color: #eaf3ff;
-    border: 1px solid #4a90d9;
+    background-color: #0f1a1a;
+    color: #eafff5;
+    border: 1px solid #00ff9d;
     border-radius: 5px;
     padding: 6px 16px;
 }
-QPushButton:hover { background-color: #2b5480; }
-QPushButton:pressed { background-color: #4a90d9; }
-QPushButton:disabled { color: #6b7c93; border-color: #33475f; }
+QPushButton:hover { background-color: #123328; }
+QPushButton:pressed { background-color: #00ff9d; color: #0a0c0f; }
+QPushButton:disabled { color: #4d5a66; border-color: #1d2a33; }
 
 QLineEdit, QComboBox, QSpinBox, QTextEdit, QListWidget, QTreeWidget {
-    background-color: #13233a;
-    color: #eaf3ff;
-    border: 1px solid #2b4a72;
-    selection-background-color: #4a90d9;
+    background-color: #0f1418;
+    color: #eafff5;
+    border: 1px solid #1b4a3a;
+    selection-background-color: #00ff9d;
+    selection-color: #0a0c0f;
 }
 
 QProgressBar {
-    background-color: #13233a;
-    border: 1px solid #2b4a72;
+    background-color: #0f1418;
+    border: 1px solid #1b4a3a;
     border-radius: 4px;
     text-align: center;
-    color: #eaf3ff;
+    color: #eafff5;
 }
 QProgressBar::chunk {
-    background-color: #4a90d9;
+    background-color: #00ff9d;
     border-radius: 3px;
 }
 
-QScrollBar:vertical { background: #0f1826; width: 12px; }
-QScrollBar::handle:vertical { background: #2b4a72; border-radius: 6px; }
+QScrollBar:vertical { background: #0a0c0f; width: 12px; }
+QScrollBar::handle:vertical { background: #1b4a3a; border-radius: 6px; }
 QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { height: 0; }
 
 QLabel { color: #dcecff; }
-QGroupBox { border: 1px solid #2b4a72; border-radius: 6px; margin-top: 8px; }
-QGroupBox::title { color: #9fd0ff; subcontrol-origin: margin; left: 10px; padding: 0 4px; }
+QGroupBox { border: 1px solid #1b4a3a; border-radius: 6px; margin-top: 8px; }
+QGroupBox::title { color: #00ff9d; subcontrol-origin: margin; left: 10px; padding: 0 4px; }
+
+QCheckBox::indicator:checked { background-color: #00ff9d; border: 1px solid #00ff9d; }
+QCheckBox::indicator:unchecked { background-color: #0f1418; border: 1px solid #1b4a3a; }

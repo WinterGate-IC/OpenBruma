@@ -1,4 +1,4 @@
-/* OpenBruma Calamares slideshow */
+/* OpenBruma Calamares slideshow — WIC neo-noir */
 import QtQuick 2.0;
 import calamares.slideshow 1.0;
 
@@ -25,7 +25,7 @@ Presentation
             anchors.top: bg1.bottom
             anchors.topMargin: 12
             text: qsTr("Welcome to OpenBruma\nWinterGate Intelligence Collective · OSINT Edition")
-            color: "#dcecff"
+            color: "#eafff5"
             font.pixelSize: 18
             horizontalAlignment: Text.Center
             wrapMode: Text.WordWrap
@@ -36,17 +36,17 @@ Presentation
     Slide {
         Rectangle {
             width: 520; height: 300
-            color: "#0b1220"
-            border.color: "#2b4a72"
+            color: "#0a0c0f"
+            border.color: "#1b4a3a"
             border.width: 2
             anchors.centerIn: parent
             Column {
                 anchors.centerIn: parent
                 spacing: 12
-                Text { text: "Built for lawful OSINT"; color: "#bfe0ff"; font.pixelSize: 24; font.bold: true; anchors.horizontalCenter: parent.horizontalCenter }
-                Text { text: "nmap · Wireshark · exiftool · SleuthKit"; color: "#dcecff"; font.pixelSize: 15; anchors.horizontalCenter: parent.horizontalCenter }
-                Text { text: "binwalk · foremost · hashcat · john"; color: "#dcecff"; font.pixelSize: 15; anchors.horizontalCenter: parent.horizontalCenter }
-                Text { text: "Firefox ESR · Thunderbird · LibreOffice"; color: "#dcecff"; font.pixelSize: 15; anchors.horizontalCenter: parent.horizontalCenter }
+                Text { text: "Built for lawful OSINT"; color: "#00ff9d"; font.pixelSize: 24; font.bold: true; anchors.horizontalCenter: parent.horizontalCenter }
+                Text { text: "nmap · Wireshark · exiftool · SleuthKit"; color: "#eafff5"; font.pixelSize: 15; anchors.horizontalCenter: parent.horizontalCenter }
+                Text { text: "binwalk · foremost · hashcat · john"; color: "#eafff5"; font.pixelSize: 15; anchors.horizontalCenter: parent.horizontalCenter }
+                Text { text: "Firefox ESR · Thunderbird · LibreOffice"; color: "#eafff5"; font.pixelSize: 15; anchors.horizontalCenter: parent.horizontalCenter }
             }
         }
         Text {
@@ -54,7 +54,7 @@ Presentation
             anchors.top: parent.verticalCenter
             anchors.topMargin: 165
             text: qsTr("Documented · proportional · lawful")
-            color: "#9fd0ff"
+            color: "#00b8ff"
             font.pixelSize: 15
         }
     }
@@ -62,16 +62,16 @@ Presentation
     Slide {
         Rectangle {
             width: 520; height: 300
-            color: "#0b1220"
-            border.color: "#2b4a72"
+            color: "#0a0c0f"
+            border.color: "#1b4a3a"
             border.width: 2
             anchors.centerIn: parent
             Column {
                 anchors.centerIn: parent
                 spacing: 14
-                Text { text: "Installing OpenBruma"; color: "#bfe0ff"; font.pixelSize: 24; font.bold: true; anchors.horizontalCenter: parent.horizontalCenter }
-                Text { text: "The guided installer will partition, install,\nand set up your system automatically."; color: "#dcecff"; font.pixelSize: 15; horizontalAlignment: Text.Center; anchors.horizontalCenter: parent.horizontalCenter }
-                Text { text: "You can also choose manual partitioning\nin the Custom installer."; color: "#9fd0ff"; font.pixelSize: 14; horizontalAlignment: Text.Center; anchors.horizontalCenter: parent.horizontalCenter }
+                Text { text: "Installing OpenBruma"; color: "#00ff9d"; font.pixelSize: 24; font.bold: true; anchors.horizontalCenter: parent.horizontalCenter }
+                Text { text: "The guided installer will partition, install,\nand set up your system automatically."; color: "#eafff5"; font.pixelSize: 15; horizontalAlignment: Text.Center; anchors.horizontalCenter: parent.horizontalCenter }
+                Text { text: "You can also choose manual partitioning\nin the Custom installer."; color: "#00b8ff"; font.pixelSize: 14; horizontalAlignment: Text.Center; anchors.horizontalCenter: parent.horizontalCenter }
             }
         }
     }

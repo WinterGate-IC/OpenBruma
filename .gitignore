@@ -25,3 +25,7 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+
+# GitHub workflows need the 'workflow' token scope; keep them local only
+.github/workflows/
+

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Brand the boot menus of the built ISO.
+# Brand the boot menus and splash images of the built ISO.
 # live-build runs this hook from inside the 'binary' directory.
 set -e
 
@@ -16,5 +16,21 @@ for f in boot/grub/grub.cfg \
       "$f" || true
   fi
 done
+
+# Replace the auto-generated Debian splash images with our branded art.
+if [ -f ../config/bootloaders/syslinux_common/splash.png ]; then
+  cp -f ../config/bootloaders/syslinux_common/splash.png isolinux/splash.png
+fi
+if [ -f ../config/bootloaders/grub-pc/live-theme/background.png ]; then
+  cp -f ../config/bootloaders/grub-pc/live-theme/background.png boot/grub/splash.png
+fi
+
+# Auto-boot after 5 seconds (syslinux uses tenths of a second).
+if [ -f isolinux/isolinux.cfg ]; then
+  sed -i 's/^timeout .*/timeout 50/' isolinux/isolinux.cfg || true
+fi
+if [ -f boot/grub/config.cfg ]; then
+  grep -q '^set timeout=' boot/grub/config.cfg || echo 'set timeout=5' >> boot/grub/config.cfg
+fi
 
 echo "OpenBruma boot menu branding applied"

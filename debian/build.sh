@@ -20,8 +20,14 @@ rm -rf config auto
 cp -a "$REPO_DIR/debian/auto" .
 cp -a "$REPO_DIR/debian/config" .
 
-# Sync branding assets into includes
-cp "$REPO_DIR/branding/openbruma-wallpaper.png" config/includes.chroot/usr/share/backgrounds/ 2>/dev/null || true
+# Sync branding assets into includes.
+# The wallpaper must be the current 4K generation, never the legacy gradient.
+WALL_SRC="$REPO_DIR/branding/wallpapers/openbruma-neo-noir.png"
+[ -f "$WALL_SRC" ] || WALL_SRC="$REPO_DIR/branding/openbruma-wallpaper.png"
+if [ -f "$WALL_SRC" ]; then
+  cp "$WALL_SRC" config/includes.chroot/usr/share/backgrounds/openbruma-wallpaper.png
+  cp "$WALL_SRC" config/includes.chroot/usr/share/backgrounds/openbruma/openbruma-neo-noir.png 2>/dev/null || true
+fi
 cp "$REPO_DIR/branding/openbruma-logo.svg" config/includes.chroot/usr/share/pixmaps/ 2>/dev/null || true
 
 # Run live-build

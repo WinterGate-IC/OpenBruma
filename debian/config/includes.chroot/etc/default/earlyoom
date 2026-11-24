@@ -1,0 +1,1 @@
+EARLYOOM_ARGS="-m 5 -s 5 --avoid (^|/)(calamares|Xorg|xfce4-session|lightdm|systemd|dbus-daemon)$ --prefer (^|/)(firefox|firefox-esr|chrome|chromium|thunderbird)$"

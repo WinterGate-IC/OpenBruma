@@ -48,25 +48,12 @@ EOF
 systemctl enable NetworkManager || true
 systemctl enable lightdm || true
 systemctl enable bluetooth || true
+systemctl enable earlyoom || true
+systemctl enable preload || true
+systemctl enable tuned || true
+systemctl enable irqbalance || true
 
-# XFCE defaults
-mkdir -p /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml
-cat > /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xfce4-desktop.xml <<'EOF'
-<?xml version="1.0" encoding="UTF-8"?>
-<channel name="xfce4-desktop" version="1.0">
-  <property name="backdrop" type="empty">
-    <property name="screen0" type="empty">
-      <property name="monitor0" type="empty">
-        <property name="workspace0" type="empty">
-          <property name="color-style" type="int" value="0"/>
-          <property name="image-style" type="int" value="5"/>
-          <property name="last-image" type="string" value="/usr/share/backgrounds/openbruma-wallpaper.png"/>
-        </property>
-      </property>
-    </property>
-  </property>
-</channel>
-EOF
+# XFCE defaults live in /etc/skel via includes.chroot.
 
 # Calamares launchers: Guided (erase disk) and Custom (manual partitioning)
 mkdir -p /etc/skel/Desktop /usr/share/applications
@@ -97,7 +84,10 @@ EOF
 
 cp /usr/share/applications/openbruma-installer-guided.desktop /etc/skel/Desktop/
 cp /usr/share/applications/openbruma-installer-custom.desktop /etc/skel/Desktop/
+cp /usr/share/applications/openbruma-themes.desktop /etc/skel/Desktop/
+cp /usr/share/applications/umbraforge.desktop /etc/skel/Desktop/WIC-UmbraForge.desktop 2>/dev/null || true
 chmod +x /etc/skel/Desktop/*.desktop
+ln -sfn /usr/share/backgrounds/openbruma /etc/skel/Desktop/Wallpapers
 
 # Guided Calamares config: copy shared modules, then apply the guided partition defaults
 if [ -d /etc/calamares/modules ]; then
@@ -130,6 +120,11 @@ fi
 if command -v plymouth-set-default-theme >/dev/null 2>&1; then
   plymouth-set-default-theme -R openbruma >/dev/null 2>&1 || true
 fi
+
+# Refresh font cache for the OpenBruma fonts
+fc-cache -f >/dev/null 2>&1 || true
+chmod +x /usr/local/bin/openbruma-wic-app 2>/dev/null || true
+chmod +x /usr/local/bin/openbruma-set-wallpaper 2>/dev/null || true
 
 # Welcome script
 cat > /usr/local/bin/openbruma-welcome <<'EOF'

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Ominis OSINT
+Comment=Web OSINT hunter by WinterGateIC
+Exec=openbruma-wic-app ominis
+Icon=openbruma-logo
+Terminal=false
+Categories=WIC;Network;
+

@@ -1,0 +1,51 @@
+# OpenBruma GRUB theme (WinterGateIC / UmbraForge neo-noir)
+desktop-image: "background.png"
+desktop-color: "#0a0c0f"
+title-text: ""
+title-color: "#00ff9d"
+title-font: "Orbitron Regular 32"
+message-color: "#b0b8c5"
+message-font: "Share Tech Mono Regular 17"
+terminal-font: "Share Tech Mono Regular 17"
+
++ boot_menu {
+    left = 10%
+    top = 42%
+    width = 80%
+    height = 46%
+    item_font = "Share Tech Mono Regular 17"
+    item_color = "#b0b8c5"
+    selected_item_color = "#00ff9d"
+    selected_item_font = "Share Tech Mono Regular 17"
+    item_height = 30
+    item_spacing = 10
+    item_padding = 0
+    icon_width = 0
+    icon_height = 0
+    item_icon_space = 0
+}
+
++ label {
+    top = 100%-44
+    left = 0
+    width = 100%
+    height = 20
+    text = "@KEYMAP_SHORT@"
+    align = "center"
+    color = "#6c7a8d"
+    font = "Share Tech Mono Small Regular 14"
+}
+
++ progress_bar {
+    id = "__timeout__"
+    left = 10%
+    top = 100%-70
+    height = 4
+    width = 80%
+    font = "Share Tech Mono Small Regular 14"
+    text_color = "#0a0c0f"
+    fg_color = "#00ff9d"
+    bg_color = "#13233a"
+    border_color = "#00ff9d"
+    text = "@TIMEOUT_NOTIFICATION_LONG@"
+}

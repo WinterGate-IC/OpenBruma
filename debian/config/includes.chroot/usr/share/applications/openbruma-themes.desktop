@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=OpenBruma Themes
+Comment=Browse OpenBruma wallpapers and themes
+Exec=thunar /usr/share/backgrounds/openbruma
+Icon=openbruma-logo
+Terminal=false
+Categories=WIC;Settings;
+

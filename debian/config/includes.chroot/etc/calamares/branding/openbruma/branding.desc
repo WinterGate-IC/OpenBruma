@@ -28,7 +28,7 @@ slideshow: "show.qml"
 stylesheet: "stylesheet.qss"
 
 style:
-  sidebarBackground: "#0b1220"
-  sidebarText: "#dcecff"
-  sidebarTextSelect: "#4a90d9"
-  sidebarTextHighlight: "#1e3a5f"
+  sidebarBackground: "#0a0c0f"
+  sidebarText: "#eafff5"
+  sidebarTextSelect: "#00ff9d"
+  sidebarTextHighlight: "#0f1a1a"
