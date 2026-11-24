@@ -1,0 +1,8 @@
+<!DOCTYPE Menu PUBLIC "-//freedesktop//DTD Menu 1.0//EN" "http://www.freedesktop.org/standards/menu-spec/1.0/menu.dtd">
+<Menu>
+  <Name>OSINT</Name>
+  <Directory>openbruma-osint.directory</Directory>
+  <Include>
+    <Category>X-OSINT</Category>
+  </Include>
+</Menu>

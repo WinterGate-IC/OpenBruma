@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=OpenBruma Compositor
+Comment=Neon window glow compositor
+Exec=/usr/local/bin/openbruma-picom
+Hidden=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true
+OnlyShowIn=XFCE;

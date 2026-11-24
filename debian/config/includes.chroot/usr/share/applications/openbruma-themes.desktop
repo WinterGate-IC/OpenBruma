@@ -3,7 +3,7 @@ Type=Application
 Name=OpenBruma Themes
 Comment=Browse OpenBruma wallpapers and themes
 Exec=thunar /usr/share/backgrounds/openbruma
-Icon=openbruma-logo
+Icon=wic-official
 Terminal=false
 Categories=WIC;Settings;
 

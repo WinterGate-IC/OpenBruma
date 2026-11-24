@@ -3,7 +3,7 @@ Type=Application
 Name=Coeus OSINT ToolBox
 Comment=OSINT toolbox by WinterGateIC
 Exec=openbruma-wic-app coeus
-Icon=openbruma-logo
+Icon=wic-official
 Terminal=false
 Categories=WIC;Network;
 

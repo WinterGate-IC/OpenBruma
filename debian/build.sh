@@ -28,6 +28,15 @@ if [ -f "$WALL_SRC" ]; then
   cp "$WALL_SRC" config/includes.chroot/usr/share/backgrounds/openbruma-wallpaper.png
   cp "$WALL_SRC" config/includes.chroot/usr/share/backgrounds/openbruma/openbruma-neo-noir.png 2>/dev/null || true
 fi
+
+# Live wallpapers (animated, dimmed, branded)
+mkdir -p config/includes.chroot/usr/share/backgrounds/openbruma/live
+cp "$REPO_DIR"/branding/live-wallpapers/*.webm \
+  config/includes.chroot/usr/share/backgrounds/openbruma/live/ 2>/dev/null || true
+
+# Brand logos used by the panel, WIC menu and About entry
+cp "$REPO_DIR/branding/openbruma-logo.png" config/includes.chroot/usr/share/pixmaps/ 2>/dev/null || true
+cp "$REPO_DIR/branding/wic-official.png" config/includes.chroot/usr/share/pixmaps/ 2>/dev/null || true
 cp "$REPO_DIR/branding/openbruma-logo.svg" config/includes.chroot/usr/share/pixmaps/ 2>/dev/null || true
 
 # Run live-build

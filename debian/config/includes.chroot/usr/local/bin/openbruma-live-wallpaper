@@ -1,0 +1,56 @@
+#!/bin/bash
+# OpenBruma live wallpaper: plays a dimmed WebM clip on the X root window
+# (xwinwrap + mpv) behind the desktop icons.
+#
+#   openbruma-live-wallpaper start [name]   # default: aurora-drift
+#   openbruma-live-wallpaper stop
+#   openbruma-live-wallpaper restart [name]
+#   openbruma-live-wallpaper list
+set -u
+
+LIVE_DIR="/usr/share/backgrounds/openbruma/live"
+DEFAULT="aurora-drift"
+STATE="${XDG_RUNTIME_DIR:-/tmp}/openbruma-live-wallpaper"
+
+stop_live() {
+  pkill -f "xwinwrap.*openbruma-live" 2>/dev/null || true
+  pkill -f "mpv.*${LIVE_DIR}" 2>/dev/null || true
+  sleep 0.3
+  rm -f "$STATE"
+}
+
+start_live() {
+  name="${1:-$DEFAULT}"
+  clip="$LIVE_DIR/$name.webm"
+  [ -f "$clip" ] || clip="$LIVE_DIR/$DEFAULT.webm"
+  [ -f "$clip" ] || { echo "no live wallpaper clips installed" >&2; exit 1; }
+
+  command -v xwinwrap >/dev/null 2>&1 || { echo "xwinwrap missing" >&2; exit 1; }
+  command -v mpv >/dev/null 2>&1 || { echo "mpv missing" >&2; exit 1; }
+
+  stop_live
+  echo "$clip" >"$STATE"
+
+  geom="$(xdpyinfo 2>/dev/null | awk '/dimensions:/ {print $2; exit}')"
+  [ -n "$geom" ] || geom="1024x768"
+
+  # -ov: override redirect, -ni: no input, -s: stippled, -nf: no focus,
+  # -b: below other windows, -un: no untransparent.
+  nohup xwinwrap -g "${geom}+0+0" \
+    -ni -s -nf -b -un -ov -- \
+    mpv -wid WID --loop --no-audio --no-osc --no-input-default-bindings \
+        --no-input-cursor --really-quiet --no-border --panscan=1.0 \
+        --vo=x11 --hwdec=no "$clip" \
+    >/dev/null 2>&1 &
+  disown 2>/dev/null || true
+  return 0
+}
+
+case "${1:-start}" in
+  start)   shift || true; start_live "${1:-}" ;;
+  stop)    stop_live ;;
+  restart) shift || true; start_live "${1:-}" ;;
+  status)  [ -f "$STATE" ] && cat "$STATE" || echo "stopped" ;;
+  list)    ls -1 "$LIVE_DIR"/*.webm 2>/dev/null | xargs -r -n1 basename | sed 's/\.webm$//' ;;
+  *)       echo "usage: $0 {start|stop|restart|status|list} [name]" >&2; exit 2 ;;
+esac

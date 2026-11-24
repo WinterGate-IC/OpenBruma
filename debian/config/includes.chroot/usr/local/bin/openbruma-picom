@@ -1,0 +1,6 @@
+#!/bin/sh
+# Start picom with the user's OpenBruma theme (falls back to the system one).
+conf="${XDG_CONFIG_HOME:-$HOME/.config}/picom/picom.conf"
+[ -f "$conf" ] || conf=/etc/xdg/picom.conf
+pkill -x picom 2>/dev/null || true
+exec picom --config "$conf" "$@"

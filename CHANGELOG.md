@@ -6,24 +6,47 @@
 - **OpenBruma theme collection** generated with WinterGateIC's UmbraForge:
   8 branded 4K wallpapers (Neo-Noir, Electric Blue, Violet Forge, Ember,
   Cyber-Lime, Crimson Gate, Ghost Protocol, Aurora), matching login and GRUB art.
-- **Custom GRUB theme** (Orbitron / Share Tech Mono, neo-noir palette) and
-  branded BIOS/UEFI splash images.
-- **Custom terminal**: XFCE terminal profile (Share Tech Mono, WIC palette),
-  branded prompt, fastfetch banner and OSINT aliases.
-- **WIC Apps menu**: dedicated application-menu category for UmbraForge,
-  VoiceForge, Ominis OSINT, Coeus OSINT ToolBox and the WIC portal.
-- **Dark desktop by default**: Arc-Dark GTK, Papirus-Dark icons, dark XFWM.
-- Single top panel (bottom dock removed), Whisker menu, systray/NetworkManager,
-  PulseAudio applet, clock and session controls.
-- **Performance tuning**: zram swap, earlyoom with installer-safe rules,
-  tuned openbruma profile, preload, irqbalance, sysctl/limits for large
-  browser/tool workloads.
-- OpenBruma-branded boot menu labels and 5-second auto-boot.
+- **Three live (animated) wallpapers** — Aurora Drift, Data Rain and Ember
+  Pulse — rendered with the official OpenBruma logo, dimmed so the desktop
+  stays readable. Aurora Drift is the default on live and installed systems.
+- **Neon desktop**: picom compositor with a per-theme window glow, gradient
+  panel with accent line and active-window underline, and five switchable
+  presets (Neo-Noir, Synthwave, Crimson, Cyber-Lime, Ghost) in *OpenBruma
+  Themes*.
+- **Official brand artwork**: the OpenBruma logo is the menu button and About
+  icon; the WIC shield is used for the WIC Apps category and every WIC app
+  entry.
+- **Three installer modes**: Guided (erase disk), Custom (manual) and a new
+  USB / Virtual Machine guided mode with explicit target selection.
+- **OSINT & Investigation menu**: Maigret, Holehe, Blackbird, Sherlock, h8mail,
+  Social Analyzer, Toutatis, Instaloader, waymore and SploitScan, installed in
+  an isolated `/opt/osint` Python environment with CLI wrappers.
+- **OPSEC menu**: AnonSurf (CLI and Qt GUI, Parrot packages), bundled Tor
+  Browser, Tor/Nyx, OnionShare, Proxychains, KeePassXC, BleachBit, MAT2,
+  MAC Changer and secure-delete.
+- **Python toolchain**: python3, pip, venv and pipx.
+- **Network**: NetworkManager manages all interfaces, Wi-Fi powersave tuned,
+  radios unblocked at login, Blueman applet, firmware for Intel/Realtek/
+  Atheros/Broadcom.
+- **Virtual machine support**: open-vm-tools, spice-vdagent and qemu-guest-agent.
+- **Root account** `root` / `openbruma`; live account lockout now also removes
+  its polkit rule.
+- **Extra account creation** through Users and Groups after install.
+
+### Changed
+- Top bar redesigned Kali-style: branded menu, pinned Firefox/Terminal/Files,
+  divider lines, icon-only window list, tray, clock and session menu.
+- Desktop icons are hidden by default so the live wallpaper is unobstructed;
+  launchers live in the menu and on the top bar.
+- Qt applications render dark (`QT_STYLE_OVERRIDE=Adwaita-Dark`).
 
 ### Fixed
 - Removed Debian logo/title from the boot splash.
 - Fixed wallpaper application across virtual monitor names.
 - Fixed missing XFCE power-manager plugin.
+- Fixed missing installer entries on the live desktop.
+- Fixed the guided installer failing to start (missing qml application data).
+- Fixed the Arch-style bootloader paths that would produce unbootable installs.
 - Safe binary-asset handling in the build tooling (no CRLF corruption of PNG/TTF).
 
 ## [0.2.0] - 2026-11-23

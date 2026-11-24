@@ -3,7 +3,7 @@ Type=Application
 Name=Ominis OSINT
 Comment=Web OSINT hunter by WinterGateIC
 Exec=openbruma-wic-app ominis
-Icon=openbruma-logo
+Icon=wic-official
 Terminal=false
 Categories=WIC;Network;
 

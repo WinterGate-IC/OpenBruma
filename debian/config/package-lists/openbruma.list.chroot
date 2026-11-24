@@ -11,6 +11,10 @@ xorg
 xinit
 network-manager
 network-manager-gnome
+wpasupplicant
+iw
+rfkill
+blueman
 pipewire
 pipewire-pulse
 wireplumber
@@ -77,6 +81,10 @@ hydra
 git
 python3
 python3-pip
+python3-venv
+python3-dev
+pipx
+build-essential
 vim
 nano
 htop
@@ -113,6 +121,41 @@ firmware-misc-nonfree
 intel-microcode
 amd64-microcode
 
+# OPSEC / anonymity
+tor
+torsocks
+proxychains4
+nyx
+onionshare
+macchanger
+secure-delete
+keepassxc
+bleachbit
+gpa
+openvpn
+wireguard-tools
+cryptsetup
+gnome-system-tools
+
+# Neon desktop rendering (picom glow + live wallpaper engine)
+picom
+mpv
+x11-xserver-utils
+xdotool
+fonts-inter
+qt6ct
+libdbus-glib-1-2
+libasound2t64
+libx11-dev
+libxext-dev
+libxrender-dev
+
+# Virtual machine integration (VirtualBox / VMware / QEMU)
+open-vm-tools
+open-vm-tools-desktop
+spice-vdagent
+qemu-guest-agent
+
 # Performance / responsiveness
 systemd-zram-generator
 earlyoom
@@ -127,3 +170,6 @@ live-config
 live-config-systemd
 plymouth
 plymouth-themes
+
+x11-utils
+

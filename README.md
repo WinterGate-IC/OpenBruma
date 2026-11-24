@@ -26,18 +26,30 @@ The current OpenBruma x86_64 edition supports 64-bit hardware only. A future
 ## Features
 
 - Debian 13 x86_64 base
-- **Calamares graphical installer** (install to disk like Kali/Ubuntu)
-- XFCE desktop with LightDM autologin
+- **Calamares graphical installer** with three modes:
+  - **Guided** — erase the selected disk, minimal clicks
+  - **Custom** — manual partitioning and advanced options
+  - **USB / Virtual Machine** — guided install to a USB stick or a
+    VirtualBox/VMware virtual disk
+- XFCE desktop with a single neon top bar, LightDM autologin and a live
+  (animated) default wallpaper
 - Linux kernel 6.12 (Debian)
-- NetworkManager, PipeWire, PipeWire-Pulse
-- Firefox ESR, Thunderbird, LibreOffice
+- NetworkManager with Wi-Fi applet and firmware for common wireless cards,
+  Bluetooth (Blueman), PipeWire audio
+- Firefox ESR (pinned next to the menu), Terminal and Files pinned on the bar
 - Open-source Mesa/Xorg drivers and common redistributable firmware
 - OSINT / investigative tooling: nmap, masscan, dnsrecon, gobuster, dirb,
   whois, dnsutils, traceroute, mtr, tcpdump, Wireshark/tshark, httrack,
   w3m/lynx, exiftool, mat2, binwalk, foremost, scalpel, SleuthKit,
   forensics-all, forensics-extra, john, hashcat, hydra
+- **OSINT & Investigation menu**: Maigret, Holehe, Blackbird, Sherlock,
+  h8mail, Social Analyzer, Toutatis, Instaloader, waymore, SploitScan
+- **OPSEC menu**: AnonSurf (CLI + GUI), Tor Browser, Tor/Nyx, OnionShare,
+  Proxychains, KeePassXC, BleachBit, MAT2, MAC Changer, secure-delete
+- Python 3 with pip, venv and pipx (isolated `/opt/osint` toolbox)
 - Partition/recovery: GParted, testdisk, gddrescue, smartmontools
 - UEFI (with Secure Boot shim) and legacy BIOS boot
+- VirtualBox/VMware/QEMU guest integration (tools, display resize, clipboard)
 - OpenBruma / WinterGateIC branding
 
 ## Repository layout
@@ -79,15 +91,19 @@ See `docs/DEBIAN.md`. Summary:
 ## Live credentials
 
 - User: `openbruma` / `openbruma`
-- Root: `root` / `root`
-- Passwordless `sudo` for the live user.
+- Root: `root` / `openbruma`
+- Passwordless `sudo` for the live user; `sudo` then works as usual.
 - The live account, its sudoers entry and the autologin config are removed
-  from the target system during installation.
-- Installers (desktop icons + application menu):
+  from the target system during installation (the root account stays).
+- Extra accounts can be added after install with **Users and Groups**
+  (`users-admin`), or from a root shell with `adduser`.
+- Installers (application menu → System, plus desktop launchers):
   - **Install OpenBruma (Guided)** - Calamares with "erase disk" preselected.
   - **Install OpenBruma (Custom)** - Calamares with manual partitioning.
-  - From a terminal: `sudo /usr/local/bin/openbruma-install-guided`
-    or `sudo /usr/local/bin/openbruma-install-custom`.
+  - **Install OpenBruma (USB / Virtual Machine)** - guided install where the
+    target device is picked explicitly (USB stick, VirtualBox/VMware disk).
+  - From a terminal: `sudo /usr/local/bin/openbruma-install-guided`,
+    `...-custom` or `...-removable`.
 
 ## Philosophy and boundaries
 

@@ -1,0 +1,9 @@
+#!/bin/bash
+# Open a terminal running an OpenBruma CLI tool and keep it open.
+#   openbruma-terminal <command> [args...]
+set -u
+[ $# -ge 1 ] || { echo "usage: openbruma-terminal <command> [args...]" >&2; exit 2; }
+cmd="$1"; shift
+title="OpenBruma | $cmd"
+# shellcheck disable=SC2086
+exec xfce4-terminal --title "$title" --hold --command "$cmd $*"

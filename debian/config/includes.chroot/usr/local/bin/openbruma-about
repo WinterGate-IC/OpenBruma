@@ -1,0 +1,15 @@
+#!/bin/sh
+# Small About dialog so the official OpenBruma branding is always reachable.
+zenity --info \
+  --title="About OpenBruma" \
+  --window-icon=/usr/share/pixmaps/openbruma-logo.png \
+  --width=420 \
+  --text="<b>OpenBruma OSINT Edition 0.3</b>
+WinterGate Intelligence Collective
+
+Where the shadows end, and the people stand.
+
+Live user: openbruma / openbruma
+Root: root / openbruma
+
+Documentation: https://github.com/WinterGate-IC/OpenBruma" 2>/dev/null

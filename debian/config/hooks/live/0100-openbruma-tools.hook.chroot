@@ -1,0 +1,195 @@
+#!/bin/sh
+# OpenBruma tool integration: OSINT Python toolbox, OPSEC suite, AnonSurf,
+# Tor Browser, live-wallpaper engine. Runs inside the chroot at build time.
+set -e
+
+LOG=/var/log/openbruma-tools.log
+: >"$LOG"
+
+say() { echo "[openbruma-tools] $*" >>"$LOG"; }
+
+# ---------------------------------------------------------------------------
+# xwinwrap (live wallpaper engine)
+# ---------------------------------------------------------------------------
+if [ -f /usr/share/openbruma/xwinwrap.c ] && command -v gcc >/dev/null 2>&1; then
+  if gcc -O2 -o /usr/local/bin/xwinwrap /usr/share/openbruma/xwinwrap.c \
+      -lX11 -lXext -lXrender >>"$LOG" 2>&1; then
+    chmod 0755 /usr/local/bin/xwinwrap
+    say "xwinwrap built"
+  else
+    say "WARN xwinwrap build failed"
+  fi
+fi
+
+# ---------------------------------------------------------------------------
+# OSINT Python toolbox (isolated venv, wrappers on PATH)
+# ---------------------------------------------------------------------------
+if [ ! -x /opt/osint/bin/python ]; then
+  python3 -m venv /opt/osint >>"$LOG" 2>&1 || say "WARN venv creation failed"
+fi
+
+if [ -x /opt/osint/bin/pip ]; then
+  /opt/osint/bin/pip install --no-cache-dir --upgrade pip wheel >>"$LOG" 2>&1 || true
+  for pkg in maigret holehe sherlock-project h8mail social-analyzer toutatis instaloader; do
+    if /opt/osint/bin/pip install --no-cache-dir "$pkg" >>"$LOG" 2>&1; then
+      say "pip ok: $pkg"
+    else
+      say "WARN pip failed: $pkg"
+    fi
+  done
+  # Blackbird is not on PyPI and has no packaging metadata: clone it and run
+  # it with the toolbox interpreter.
+  if [ ! -d /opt/blackbird ]; then
+    if git clone --depth 1 https://github.com/p1ngul1n0/blackbird /opt/blackbird >>"$LOG" 2>&1; then
+      /opt/osint/bin/pip install --no-cache-dir -r /opt/blackbird/requirements.txt >>"$LOG" 2>&1 \
+        || say "WARN blackbird requirements failed"
+      say "blackbird cloned"
+    else
+      say "WARN blackbird clone failed"
+    fi
+  fi
+fi
+
+if [ -f /opt/blackbird/blackbird.py ]; then
+  cat > /usr/local/bin/blackbird <<'EOF'
+#!/bin/sh
+exec /opt/osint/bin/python /opt/blackbird/blackbird.py "$@"
+EOF
+  chmod 0755 /usr/local/bin/blackbird
+fi
+
+for b in maigret holehe blackbird sherlock h8mail social-analyzer toutatis instaloader; do
+  [ -x "/opt/osint/bin/$b" ] && ln -sfn "/opt/osint/bin/$b" "/usr/local/bin/$b"
+done
+
+# ---------------------------------------------------------------------------
+# Tor Browser (bundled, unmodified upstream build)
+# ---------------------------------------------------------------------------
+TB_VER="16.0.3"
+TB_TAR="tor-browser-linux-x86_64-${TB_VER}.tar.xz"
+TB_URL="https://dist.torproject.org/torbrowser/${TB_VER}/${TB_TAR}"
+if [ ! -x /opt/tor-browser/Browser/start-tor-browser ]; then
+  if curl -fsSL -o "/tmp/${TB_TAR}" "$TB_URL" >>"$LOG" 2>&1; then
+    tar -xJf "/tmp/${TB_TAR}" -C /opt >>"$LOG" 2>&1 || say "WARN tor browser extract failed"
+    rm -f "/tmp/${TB_TAR}"
+    found="$(find /opt -maxdepth 3 -type f -name start-tor-browser 2>/dev/null | head -1)"
+    if [ -n "$found" ]; then
+      tbroot="$(dirname "$(dirname "$found")")"
+      [ "$tbroot" = "/opt/tor-browser" ] || ln -sfn "$tbroot" /opt/tor-browser
+      say "tor browser ${TB_VER} installed"
+    fi
+  else
+    say "WARN tor browser download failed"
+  fi
+fi
+
+cat > /usr/local/bin/torbrowser <<'EOF'
+#!/bin/sh
+# Tor Browser launcher (bundled upstream build).
+if [ -x /opt/tor-browser/Browser/start-tor-browser ]; then
+  exec /opt/tor-browser/Browser/start-tor-browser --detach "$@"
+fi
+echo "Tor Browser is not installed on this system." >&2
+exit 1
+EOF
+chmod 0755 /usr/local/bin/torbrowser
+
+cat > /usr/share/applications/openbruma-torbrowser.desktop <<'EOF'
+[Desktop Entry]
+Type=Application
+Name=Tor Browser
+Comment=Private browsing over the Tor network
+Exec=/usr/local/bin/torbrowser
+Icon=/opt/tor-browser/Browser/browser/chrome/icons/default/default128.png
+Terminal=false
+Categories=X-OPSEC;Network;
+EOF
+
+# ---------------------------------------------------------------------------
+# AnonSurf (Parrot package: CLI + Qt GUI) with its runtime dependencies
+# ---------------------------------------------------------------------------
+PARROT="https://deb.parrot.sh/parrot/pool/main/a/anonsurf"
+DEBS="anonsurf-cli_6.0.1+parrot2_amd64.deb anonsurf_6.0.1+parrot2_amd64.deb anonsurf-gui_6.0.1+parrot2_amd64.deb"
+mkdir -p /tmp/anonsurf-debs
+for d in $DEBS; do
+  [ -f "/tmp/anonsurf-debs/$d" ] || curl -fsSL -o "/tmp/anonsurf-debs/$d" "$PARROT/$d" >>"$LOG" 2>&1 || say "WARN download failed: $d"
+done
+if ls /tmp/anonsurf-debs/*.deb >/dev/null 2>&1; then
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    /tmp/anonsurf-debs/*.deb >>"$LOG" 2>&1 || say "WARN anonsurf install failed"
+fi
+rm -rf /tmp/anonsurf-debs
+
+cat > /usr/share/applications/openbruma-anonsurf-gui.desktop <<'EOF'
+[Desktop Entry]
+Type=Application
+Name=AnonSurf (Graphical)
+Comment=Route all traffic through Tor (graphical front-end)
+Exec=pkexec anonsurf-gui
+Icon=security-high
+Terminal=false
+Categories=X-OPSEC;Network;
+EOF
+
+# ---------------------------------------------------------------------------
+# OSINT menu entries
+# ---------------------------------------------------------------------------
+mk_osint() {
+  # $1=id $2=Name $3=Comment $4=command $5=icon
+  cat > "/usr/share/applications/openbruma-osint-$1.desktop" <<EOF
+[Desktop Entry]
+Type=Application
+Name=$2
+Comment=$3
+Exec=/usr/local/bin/openbruma-terminal $4
+Icon=$5
+Terminal=false
+Categories=X-OSINT;Network;
+EOF
+}
+
+mk_osint maigret "Maigret" "Username reconnaissance across thousands of sites" "maigret" "system-search"
+mk_osint holehe "Holehe" "Check where an email address is registered" "holehe" "mail-message-new"
+mk_osint blackbird "Blackbird" "Username and email OSINT" "blackbird" "system-search"
+mk_osint sherlock "Sherlock" "Hunt down social media accounts by username" "sherlock" "system-search"
+mk_osint h8mail "h8mail" "Email breach and credential exposure lookup" "h8mail" "mail-message-new"
+mk_osint social-analyzer "Social Analyzer" "Analyse and find social profiles" "social-analyzer" "system-search"
+mk_osint toutatis "Toutatis" "Instagram account OSINT" "toutatis" "camera-photo"
+mk_osint instaloader "Instaloader" "Download Instagram media and metadata" "instaloader" "camera-photo"
+mk_osint waymore "waymore" "Find more URLs from web archives" "waymore" "system-search"
+mk_osint sploitscan "SploitScan" "Correlate CVEs with public exploits" "sploitscan" "security-high"
+
+# ---------------------------------------------------------------------------
+# OPSEC menu entries
+# ---------------------------------------------------------------------------
+mk_opsec() {
+  # $1=id $2=Name $3=Comment $4=Exec $5=icon $6=terminal
+  cat > "/usr/share/applications/openbruma-opsec-$1.desktop" <<EOF
+[Desktop Entry]
+Type=Application
+Name=$2
+Comment=$3
+Exec=$4
+Icon=$5
+Terminal=$6
+Categories=X-OPSEC;Network;
+EOF
+}
+
+mk_opsec anonsurf-cli "AnonSurf (Terminal)" "Route all traffic through Tor (CLI)" "/usr/local/bin/openbruma-terminal anonsurf" "utilities-terminal" false
+mk_opsec nyx "Nyx (Tor Monitor)" "Monitor Tor circuits and bandwidth" "/usr/local/bin/openbruma-terminal nyx" "utilities-terminal" false
+mk_opsec proxychains "Proxychains Shell" "Run commands through Tor or a proxy chain" "/usr/local/bin/openbruma-terminal proxychains4" "utilities-terminal" false
+mk_opsec tor-status "Tor Status" "Show Tor service and circuit status" "/usr/local/bin/openbruma-terminal systemctl status tor@default" "utilities-terminal" false
+mk_opsec mat2 "MAT2 (Metadata Cleaner)" "Strip metadata from files (CLI)" "/usr/local/bin/openbruma-terminal mat2" "utilities-terminal" false
+mk_opsec macchanger "MAC Changer" "Change a network interface MAC address" "/usr/local/bin/openbruma-terminal macchanger --help" "utilities-terminal" false
+mk_opsec secure-delete "Secure Delete" "Securely wipe files (srm)" "/usr/local/bin/openbruma-terminal srm --help" "utilities-terminal" false
+
+# GUI OPSEC apps that ship desktop files of their own
+for d in onionshare keepassxc bleachbit gpa; do
+  if [ -f "/usr/share/applications/$d.desktop" ]; then
+    sed -i 's/^Categories=.*/Categories=X-OPSEC;Utility;Network;/' "/usr/share/applications/$d.desktop" || true
+  fi
+done
+
+say "done"
+exit 0

@@ -29,7 +29,8 @@ if ! id openbruma >/dev/null 2>&1; then
   useradd -m -G sudo,audio,video,netdev -s /bin/bash openbruma || true
 fi
 echo "openbruma:openbruma" | chpasswd || true
-echo "root:root" | chpasswd || true
+# Documented live/root credentials: root / openbruma
+echo "root:openbruma" | chpasswd || true
 
 # Passwordless sudo for live user
 mkdir -p /etc/sudoers.d
@@ -55,6 +56,9 @@ autologin-user=openbruma
 autologin-user-timeout=0
 user-session=xfce
 greeter-session=lightdm-gtk-greeter
+greeter-hide-users=false
+greeter-show-manual-login=true
+allow-user-switching=true
 EOF
 
 # Enable services
@@ -66,7 +70,49 @@ systemctl enable preload || true
 systemctl enable tuned || true
 systemctl enable irqbalance || true
 
+# NetworkManager owns every interface (wifi included), with stable wifi
+# behaviour for laptop cards.
+mkdir -p /etc/NetworkManager/conf.d
+cat > /etc/NetworkManager/conf.d/00-openbruma.conf <<'EOF'
+[main]
+plugins=ifupdown,keyfile
+[ifupdown]
+managed=true
+[device]
+wifi.scan-rand-mac-address=no
+[connection]
+wifi.powersave=2
+EOF
+cat > /etc/network/interfaces <<'EOF'
+# Managed by NetworkManager.
+auto lo
+iface lo inet loopback
+EOF
+mkdir -p /etc/NetworkManager/system-connections
+chmod 700 /etc/NetworkManager/system-connections
+# Unblock radios on boot (rfkill soft blocks survive some firmware resets).
+cat > /usr/local/bin/openbruma-unblock-radios <<'EOF'
+#!/bin/sh
+rfkill unblock all 2>/dev/null || true
+EOF
+chmod 0755 /usr/local/bin/openbruma-unblock-radios
+cat > /etc/xdg/autostart/openbruma-radios.desktop <<'EOF'
+[Desktop Entry]
+Type=Application
+Name=OpenBruma Radios
+Exec=/usr/local/bin/openbruma-unblock-radios
+Hidden=false
+NoDisplay=true
+X-GNOME-Autostart-enabled=true
+OnlyShowIn=XFCE;
+EOF
+
 # XFCE defaults live in /etc/skel via includes.chroot.
+
+# Qt applications (Calamares, AnonSurf GUI) should render dark out of the box.
+if ! grep -q '^QT_STYLE_OVERRIDE=' /etc/environment 2>/dev/null; then
+  echo 'QT_STYLE_OVERRIDE=Adwaita-Dark' >>/etc/environment
+fi
 
 # Calamares launchers: Guided (erase disk) and Custom (manual partitioning).
 # Calamares 3.3 needs a full application-data directory (qml/) when -c is used,
@@ -94,6 +140,16 @@ drawNestedPartitions: true
 alwaysShowPartitionLabels: true
 EOF
 
+cat > /usr/share/openbruma/calamares/partition-removable.conf <<'EOF'
+---
+initialPartitioningChoice: eraseDisk
+initialSwapChoice: none
+defaultFileSystemType: ext4
+efiSystemPartition: /boot/efi
+drawNestedPartitions: false
+alwaysShowPartitionLabels: true
+EOF
+
 cat > /usr/local/bin/openbruma-install-guided <<'EOF'
 #!/bin/sh
 # Guided install: erase the selected disk. Call via pkexec.
@@ -115,7 +171,22 @@ install -m 0644 /usr/share/openbruma/calamares/partition-custom.conf \
   /etc/calamares/modules/partition.conf
 exec calamares
 EOF
-chmod 0755 /usr/local/bin/openbruma-install-guided /usr/local/bin/openbruma-install-custom
+
+cat > /usr/local/bin/openbruma-install-removable <<'EOF'
+#!/bin/sh
+# USB / virtual-machine install: guided erase of the selected device.
+# The target device is always chosen explicitly in the partition page, so a
+# USB stick or a VirtualBox/VMware virtual disk can be picked safely.
+set -e
+[ "$(id -u)" = "0" ] || { echo "openbruma-install-removable must run as root" >&2; exit 1; }
+install -d -m 0755 /etc/calamares/modules
+install -m 0644 /usr/share/openbruma/calamares/partition-removable.conf \
+  /etc/calamares/modules/partition.conf
+exec calamares
+EOF
+chmod 0755 /usr/local/bin/openbruma-install-guided \
+           /usr/local/bin/openbruma-install-custom \
+           /usr/local/bin/openbruma-install-removable
 
 cat > /usr/share/applications/openbruma-installer-guided.desktop <<'EOF'
 [Desktop Entry]
@@ -141,8 +212,21 @@ Categories=System;
 StartupNotify=true
 EOF
 
+cat > /usr/share/applications/openbruma-installer-removable.desktop <<'EOF'
+[Desktop Entry]
+Type=Application
+Name=Install OpenBruma (USB / Virtual Machine)
+Comment=Guided install to a USB stick or a VirtualBox/VMware virtual disk
+Exec=pkexec /usr/local/bin/openbruma-install-removable
+Icon=calamares
+Terminal=false
+Categories=System;
+StartupNotify=true
+EOF
+
 cp /usr/share/applications/openbruma-installer-guided.desktop /etc/skel/Desktop/
 cp /usr/share/applications/openbruma-installer-custom.desktop /etc/skel/Desktop/
+cp /usr/share/applications/openbruma-installer-removable.desktop /etc/skel/Desktop/
 cp /usr/share/applications/openbruma-themes.desktop /etc/skel/Desktop/
 cp /usr/share/applications/umbraforge.desktop /etc/skel/Desktop/WIC-UmbraForge.desktop 2>/dev/null || true
 chmod +x /etc/skel/Desktop/*.desktop

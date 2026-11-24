@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=About OpenBruma
+Comment=Version, credits and credentials
+Exec=/usr/local/bin/openbruma-about
+Icon=openbruma-logo
+Terminal=false
+Categories=System;

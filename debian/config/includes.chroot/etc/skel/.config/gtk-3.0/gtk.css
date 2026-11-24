@@ -1,27 +1,59 @@
-﻿/* OpenBruma neo-noir panel styling (dark by default). */
+/* OpenBruma neon panel theme (accent is substituted by openbruma-theme). */
+
 .xfce4-panel {
-  background-color: rgba(9, 15, 13, 0.96);
-  color: #cfe9dd;
-  border-top: 0;
-  border-bottom: 1px solid rgba(46, 230, 160, 0.25);
+  background-image: linear-gradient(to bottom,
+                    rgba(12, 22, 19, 0.97) 0%,
+                    rgba(6, 11, 9, 0.98) 100%);
+  color: #dcf7ec;
+  border-bottom: 1px solid #2ee6a0;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.65), 0 0 6px #2ee6a0;
+}
+
+#XfcePanelWindow {
+  background-image: linear-gradient(to bottom,
+                    rgba(12, 22, 19, 0.97) 0%,
+                    rgba(6, 11, 9, 0.98) 100%);
 }
 
 .xfce4-panel button {
-  border-radius: 5px;
-  padding: 2px 4px;
+  border: 0;
+  border-radius: 6px;
+  padding: 2px 5px;
+  background-image: none;
 }
 
 .xfce4-panel button:hover {
   background-image: none;
-  background-color: rgba(46, 230, 160, 0.16);
+  background-color: alpha(#2ee6a0, 0.16);
 }
 
-#XfcePanelWindow {
-  background-color: rgba(9, 15, 13, 0.96);
+.xfce4-panel button:checked,
+.xfce4-panel button:active {
+  background-image: none;
+  background-color: alpha(#2ee6a0, 0.22);
+  box-shadow: inset 0 -2px 0 #2ee6a0;
 }
 
 .xfce4-panel .tasklist button:checked {
   background-image: none;
-  background-color: rgba(46, 230, 160, 0.22);
+  background-color: alpha(#2ee6a0, 0.18);
   border-bottom: 2px solid #2ee6a0;
+}
+
+.xfce4-panel .tasklist button:hover {
+  background-color: alpha(#2ee6a0, 0.12);
+}
+
+.xfce4-panel .separator {
+  background-color: alpha(#2ee6a0, 0.45);
+}
+
+.xfce4-panel .clock {
+  padding: 0 8px;
+  color: #2ee6a0;
+  font-weight: 600;
+}
+
+.xfce4-panel menuitem {
+  padding: 4px 8px;
 }

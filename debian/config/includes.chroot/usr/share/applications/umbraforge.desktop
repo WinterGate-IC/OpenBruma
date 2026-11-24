@@ -3,7 +3,7 @@ Type=Application
 Name=UmbraForge
 Comment=Layered image and wallpaper studio by WinterGateIC
 Exec=openbruma-wic-app umbraforge
-Icon=openbruma-logo
+Icon=wic-official
 Terminal=false
 Categories=WIC;Graphics;
 

@@ -1,0 +1,86 @@
+#!/bin/bash
+# OpenBruma theme switcher: neon presets that combine wallpaper, panel accent
+# and window-glow colour. Run with no arguments for a graphical chooser.
+set -u
+
+CONF_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/openbruma"
+CONF="$CONF_DIR/theme"
+mkdir -p "$CONF_DIR" "${XDG_CONFIG_HOME:-$HOME/.config}/gtk-3.0"
+
+declare -A ACCENT=(
+  [neo-noir]="#2ee6a0"
+  [synthwave]="#ff4fd8"
+  [crimson]="#ff3b5c"
+  [lime]="#b6ff2e"
+  [ghost]="#9fe8ff"
+)
+declare -A LABEL=(
+  [neo-noir]="Neo-Noir (default, live aurora)"
+  [synthwave]="Synthwave Violet (static, magenta glow)"
+  [crimson]="Crimson Circuit (static, red glow)"
+  [lime]="Cyber-Lime (live data rain)"
+  [ghost]="Ghost Protocol (static, ice glow)"
+)
+declare -A WALL=(
+  [neo-noir]="/usr/share/backgrounds/openbruma-wallpaper.png"
+  [synthwave]="/usr/share/backgrounds/openbruma/openbruma-violet-forge.png"
+  [crimson]="/usr/share/backgrounds/openbruma/openbruma-crimson-gate.png"
+  [lime]="/usr/share/backgrounds/openbruma-wallpaper.png"
+  [ghost]="/usr/share/backgrounds/openbruma/openbruma-ghost.png"
+)
+declare -A LIVE=(
+  [neo-noir]="aurora-drift"
+  [synthwave]=""
+  [crimson]=""
+  [lime]="data-rain"
+  [ghost]=""
+)
+
+apply_theme() {
+  preset="${1:-neo-noir}"
+  [ -n "${ACCENT[$preset]:-}" ] || preset="neo-noir"
+  accent="${ACCENT[$preset]}"
+
+  echo "preset=$preset" >"$CONF"
+
+  # panel / GTK accent CSS
+  sed "s|@@ACCENT@@|$accent|g" /usr/share/openbruma/themes/panel.css \
+    >"${XDG_CONFIG_HOME:-$HOME/.config}/gtk-3.0/gtk.css"
+
+  # window glow colour (picom)
+  pconf="${XDG_CONFIG_HOME:-$HOME/.config}/picom/picom.conf"
+  mkdir -p "$(dirname "$pconf")"
+  if [ -f /usr/share/openbruma/themes/picom.conf ]; then
+    sed "s|@@ACCENT@@|$accent|g" /usr/share/openbruma/themes/picom.conf >"$pconf"
+    pkill -x picom 2>/dev/null || true
+    (sleep 0.4; picom --config "$pconf" >/dev/null 2>&1 &) >/dev/null 2>&1 || true
+  fi
+
+  # wallpaper: live clip or static image
+  if [ -n "${LIVE[$preset]:-}" ]; then
+    /usr/local/bin/openbruma-live-wallpaper start "${LIVE[$preset]}" >/dev/null 2>&1 || true
+    # keep a dark static colour behind the video window
+    xfconf-query -c xfce4-desktop -p /backdrop/screen0/monitor0/workspace0/color-style -s 0 2>/dev/null || true
+  else
+    /usr/local/bin/openbruma-live-wallpaper stop >/dev/null 2>&1 || true
+    /usr/local/bin/openbruma-set-wallpaper "${WALL[$preset]}" >/dev/null 2>&1 || true
+  fi
+
+  xfce4-panel -r >/dev/null 2>&1 || true
+  notify-send -i openbruma-menu "OpenBruma" "Theme: ${LABEL[$preset]}" 2>/dev/null || true
+}
+
+if [ $# -eq 0 ]; then
+  choice=$(for k in neo-noir synthwave crimson lime ghost; do
+    echo "$k"; echo "${LABEL[$k]}"
+  done | zenity --list --title="OpenBruma Themes" \
+        --text="Choose a neon preset" --column="id" --column="Theme" \
+        --hide-column=1 --height=330 --width=520 2>/dev/null) || exit 0
+  [ -n "$choice" ] || exit 0
+  key=$(for k in neo-noir synthwave crimson lime ghost; do
+    [ "${LABEL[$k]}" = "$choice" ] && echo "$k"
+  done | head -1)
+  apply_theme "${key:-neo-noir}"
+else
+  apply_theme "$1"
+fi
