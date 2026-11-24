@@ -12,15 +12,17 @@ EOF
 
 cat > /etc/os-release <<'EOF'
 NAME="OpenBruma"
-PRETTY_NAME="OpenBruma OSINT Edition 0.2 (Debian-based)"
+PRETTY_NAME="OpenBruma OSINT Edition 0.3"
 ID=openbruma
 ID_LIKE=debian
-VERSION_ID="0.2"
-VERSION="0.2 (trixie)"
+VERSION_ID="0.3"
+VERSION="0.3 (trixie)"
+VERSION_CODENAME=trixie
 HOME_URL="https://github.com/WinterGate-IC/OpenBruma"
 SUPPORT_URL="https://github.com/WinterGate-IC/OpenBruma/issues"
 BUG_REPORT_URL="https://github.com/WinterGate-IC/OpenBruma/issues"
 EOF
+ln -sf ../usr/lib/os-release /etc/lsb-release 2>/dev/null || true
 
 # Live user (created by live-config username=openbruma at boot); create for build-time convenience
 if ! id openbruma >/dev/null 2>&1; then
@@ -89,10 +91,46 @@ cp /usr/share/applications/umbraforge.desktop /etc/skel/Desktop/WIC-UmbraForge.d
 chmod +x /etc/skel/Desktop/*.desktop
 ln -sfn /usr/share/backgrounds/openbruma /etc/skel/Desktop/Wallpapers
 
-# Guided Calamares config: copy shared modules, then apply the guided partition defaults
+# Debian-style bootloader + display manager for Calamares. The stock Debian
+# module configs assume Arch-style kernel names, which would install an
+# unbootable system.
+mkdir -p /etc/calamares/modules
+cat > /etc/calamares/modules/bootloader.conf <<'EOF'
+---
+efiBootLoader: "grub"
+kernel: "/vmlinuz"
+img: "/initrd.img"
+fallback: "/initrd.img"
+timeout: 5
+grubInstall: "grub-install"
+grubMkconfig: "grub-mkconfig"
+grubCfg: "/boot/grub/grub.cfg"
+grubProbe: "grub-probe"
+efiBootMgr: "efibootmgr"
+installEFIFallback: true
+EOF
+
+cat > /etc/calamares/modules/displaymanager.conf <<'EOF'
+---
+displaymanagers:
+  - lightdm
+basicSetup: false
+sysconfigSetup: false
+EOF
+
+# Guided Calamares config: clone the default config tree, then apply the
+# guided partition defaults. A config dir must contain settings.conf and the
+# branding tree, otherwise `calamares -c /etc/calamares-guided` aborts.
+if [ -f /etc/calamares/settings.conf ]; then
+  mkdir -p /etc/calamares-guided
+  cp -a /etc/calamares/settings.conf /etc/calamares-guided/settings.conf
+fi
 if [ -d /etc/calamares/modules ]; then
   mkdir -p /etc/calamares-guided/modules
   cp -a /etc/calamares/modules/. /etc/calamares-guided/modules/ 2>/dev/null || true
+fi
+if [ -d /etc/calamares/branding ]; then
+  ln -sfn /etc/calamares/branding /etc/calamares-guided/branding
 fi
 # Our guided partition defaults (overwrite the copied Debian module config)
 cat > /etc/calamares-guided/modules/partition.conf <<'EOF'
@@ -108,12 +146,15 @@ userSwapChoices:
   - file
 drawNestedPartitions: false
 alwaysShowPartitionLabels: true
-allowZfsEncryption: true
+allowZfsEncryption: false
 EOF
 
 # Ensure the default Calamares settings use OpenBruma branding
 if [ -f /etc/calamares/settings.conf ]; then
   sed -i 's/^branding:.*/branding: openbruma/' /etc/calamares/settings.conf || true
+fi
+if [ -f /etc/calamares-guided/settings.conf ]; then
+  sed -i 's/^branding:.*/branding: openbruma/' /etc/calamares-guided/settings.conf || true
 fi
 
 # Plymouth boot splash branding
@@ -123,6 +164,8 @@ fi
 
 # Refresh font cache for the OpenBruma fonts
 fc-cache -f >/dev/null 2>&1 || true
+# Refresh the icon cache so the branded Whisker icon resolves immediately
+gtk-update-icon-cache -f -t /usr/share/icons/hicolor >/dev/null 2>&1 || true
 chmod +x /usr/local/bin/openbruma-wic-app 2>/dev/null || true
 chmod +x /usr/local/bin/openbruma-set-wallpaper 2>/dev/null || true
 
