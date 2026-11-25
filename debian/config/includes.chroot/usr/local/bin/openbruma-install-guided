@@ -1,0 +1,38 @@
+#!/bin/sh
+# OpenBruma installer launcher (guided). Runs as root via pkexec.
+#
+# The Debian packaging of Calamares installs its own /etc/calamares tree, so the
+# OpenBruma configuration is enforced here at runtime instead of relying on
+# build order. This also keeps the install path identical on rebuilt images.
+set -e
+[ "$(id -u)" = "0" ] || { echo "openbruma-install-guided must run as root" >&2; exit 1; }
+
+SRC=/usr/share/openbruma/calamares
+CONF=/etc/calamares/settings.conf
+
+install -d -m 0755 /etc/calamares/modules
+
+# Branding + the modules whose Debian defaults would produce a broken install.
+if [ -f "$CONF" ]; then
+  sed -i 's/^branding:.*/branding: openbruma/' "$CONF"
+fi
+for f in bootloader displaymanager users shellprocess-livecleanup; do
+  [ -f "$SRC/$f.conf" ] && install -m 0644 "$SRC/$f.conf" "/etc/calamares/modules/$f.conf"
+done
+install -m 0644 "$SRC/partition-guided.conf" /etc/calamares/modules/partition.conf
+
+# Make sure the live-account cleanup runs after the users module.
+if [ -f "$CONF" ] && ! grep -q 'shellprocess@livecleanup' "$CONF"; then
+  awk '
+    /^- exec:/ { inexec = 1 }
+    /^- show:/ { inexec = 0 }
+    { print }
+    inexec && /^  - users$/ { print "  - shellprocess@livecleanup" }
+  ' "$CONF" > "$CONF.new" && mv "$CONF.new" "$CONF"
+fi
+
+# Render QML without OpenGL: fixes black content areas on VMs and older GPUs.
+export QT_QUICK_BACKEND=software
+export LIBGL_ALWAYS_SOFTWARE=1
+
+exec calamares

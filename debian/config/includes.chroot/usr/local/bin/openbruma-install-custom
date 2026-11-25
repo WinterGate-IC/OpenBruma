@@ -1,0 +1,29 @@
+#!/bin/sh
+# OpenBruma installer launcher (custom / manual partitioning). Runs as root.
+set -e
+[ "$(id -u)" = "0" ] || { echo "openbruma-install-custom must run as root" >&2; exit 1; }
+
+SRC=/usr/share/openbruma/calamares
+CONF=/etc/calamares/settings.conf
+install -d -m 0755 /etc/calamares/modules
+
+[ -f "$CONF" ] && sed -i 's/^branding:.*/branding: openbruma/' "$CONF"
+for f in bootloader displaymanager users shellprocess-livecleanup; do
+  [ -f "$SRC/$f.conf" ] && install -m 0644 "$SRC/$f.conf" "/etc/calamares/modules/$f.conf"
+done
+install -m 0644 "$SRC/partition-custom.conf" /etc/calamares/modules/partition.conf
+
+if [ -f "$CONF" ] && ! grep -q 'shellprocess@livecleanup' "$CONF"; then
+  awk '
+    /^- exec:/ { inexec = 1 }
+    /^- show:/ { inexec = 0 }
+    { print }
+    inexec && /^  - users$/ { print "  - shellprocess@livecleanup" }
+  ' "$CONF" > "$CONF.new" && mv "$CONF.new" "$CONF"
+fi
+
+# Render QML without OpenGL: fixes black content areas on VMs and older GPUs.
+export QT_QUICK_BACKEND=software
+export LIBGL_ALWAYS_SOFTWARE=1
+
+exec calamares

@@ -58,6 +58,16 @@
   started by the explicit *Enable Neon Window Glow* toggle. The packaged picom
   autostart, which competed with the window manager and caused black/flickering
   repaints, is removed.
+- **Installer branding is now enforced at launch** instead of at image-build
+  time. The Debian Calamares packaging replaces `/etc/calamares` during the
+  build, which made the installer fall back to stock Debian branding (and the
+  unstyled black content panel). The three launchers now apply the OpenBruma
+  branding, module configs and live-account cleanup immediately before opening.
+- **Calamares stylesheet trimmed** so a broad `QWidget` background can no
+  longer paint over embedded pages/pickers.
+- **Faster boot:** boot menus auto-select after 3 s (was 5 s) and services that
+  are irrelevant on this desktop (ModemManager, CUPS, Avahi, saned,
+  speech-dispatcher, colord) are masked.
 - **Tray icons:** added the XFCE indicator plugin so NetworkManager and Blueman
   (StatusNotifier) icons appear next to the legacy tray.
 - Terminal opens with a branded ASCII/OpenBruma + WIC banner and live system

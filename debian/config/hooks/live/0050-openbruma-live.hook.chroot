@@ -68,6 +68,14 @@ systemctl enable NetworkManager || true
 systemctl enable lightdm || true
 systemctl enable bluetooth || true
 
+# Boot speed: services that are irrelevant on a live/OSINT desktop add
+# seconds of startup time. Masking them is safe (they stay installed).
+for unit in ModemManager.service cups.service cups-browsed.service \
+            avahi-daemon.service avahi-daemon.socket saned.socket \
+            speech-dispatcher.service colord.service; do
+  systemctl mask "$unit" >/dev/null 2>&1 || true
+done
+
 # The picom package ships its own autostart entry. Running it next to xfwm's
 # compositor causes black/flickering repaints on VMs, so the glow is opt-in.
 rm -f /etc/xdg/autostart/picom.desktop

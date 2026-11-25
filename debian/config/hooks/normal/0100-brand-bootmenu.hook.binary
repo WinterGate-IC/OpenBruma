@@ -27,10 +27,10 @@ fi
 
 # Auto-boot after 5 seconds (syslinux uses tenths of a second).
 if [ -f isolinux/isolinux.cfg ]; then
-  sed -i 's/^timeout .*/timeout 50/' isolinux/isolinux.cfg || true
+  sed -i 's/^timeout .*/timeout 30/' isolinux/isolinux.cfg || true
 fi
 if [ -f boot/grub/config.cfg ]; then
-  grep -q '^set timeout=' boot/grub/config.cfg || echo 'set timeout=5' >> boot/grub/config.cfg
+  grep -q '^set timeout=' boot/grub/config.cfg && sed -i 's/^set timeout=.*/set timeout=3/' boot/grub/config.cfg || echo 'set timeout=3' >> boot/grub/config.cfg
 fi
 
 echo "OpenBruma boot menu branding applied"

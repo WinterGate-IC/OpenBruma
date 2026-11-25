@@ -47,3 +47,14 @@ xfconf-query -c xfce4-desktop -l 2>/dev/null \
 # fall back to its stock wallpaper.
 xfconf-query -c xfce4-desktop -p /desktop-icons/style -n -t int -s 0 2>/dev/null \
   || xfconf-query -c xfce4-desktop -p /desktop-icons/style -s 0 2>/dev/null || true
+
+# xfdesktop can finish starting after this script and reset its backdrop with
+# the stock wallpaper. Re-apply for a few seconds to win that race.
+for _ in 1 2 3 4 5; do
+  for m in $mons; do
+    xfconf-query -c xfce4-desktop \
+      -p "/backdrop/screen0/monitor${m}/workspace0/last-image" -s "$WALL" 2>/dev/null || true
+  done
+  sleep 2
+done
+xfdesktop --reload >/dev/null 2>&1 || true
