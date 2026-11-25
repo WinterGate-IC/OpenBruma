@@ -24,6 +24,7 @@ images:
   productIcon: "icon.png"
   productWelcome: "welcome.png"
 
+slideshow: "show.qml"
 stylesheet: "stylesheet.qss"
 
 style:
