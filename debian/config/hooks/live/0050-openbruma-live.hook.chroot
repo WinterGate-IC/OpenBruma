@@ -164,43 +164,9 @@ drawNestedPartitions: false
 alwaysShowPartitionLabels: true
 EOF
 
-cat > /usr/local/bin/openbruma-install-guided <<'EOF'
-#!/bin/sh
-# Guided install: erase the selected disk. Call via pkexec.
-set -e
-[ "$(id -u)" = "0" ] || { echo "openbruma-install-guided must run as root" >&2; exit 1; }
-install -d -m 0755 /etc/calamares/modules
-install -m 0644 /usr/share/openbruma/calamares/partition-guided.conf \
-  /etc/calamares/modules/partition.conf
-exec calamares
-EOF
-
-cat > /usr/local/bin/openbruma-install-custom <<'EOF'
-#!/bin/sh
-# Custom install: manual partitioning. Call via pkexec.
-set -e
-[ "$(id -u)" = "0" ] || { echo "openbruma-install-custom must run as root" >&2; exit 1; }
-install -d -m 0755 /etc/calamares/modules
-install -m 0644 /usr/share/openbruma/calamares/partition-custom.conf \
-  /etc/calamares/modules/partition.conf
-exec calamares
-EOF
-
-cat > /usr/local/bin/openbruma-install-removable <<'EOF'
-#!/bin/sh
-# USB / virtual-machine install: guided erase of the selected device.
-# The target device is always chosen explicitly in the partition page, so a
-# USB stick or a VirtualBox/VMware virtual disk can be picked safely.
-set -e
-[ "$(id -u)" = "0" ] || { echo "openbruma-install-removable must run as root" >&2; exit 1; }
-install -d -m 0755 /etc/calamares/modules
-install -m 0644 /usr/share/openbruma/calamares/partition-removable.conf \
-  /etc/calamares/modules/partition.conf
-exec calamares
-EOF
-chmod 0755 /usr/local/bin/openbruma-install-guided \
-           /usr/local/bin/openbruma-install-custom \
-           /usr/local/bin/openbruma-install-removable
+# The installer launchers live in config/includes.chroot/usr/local/bin and are
+# installed after the packages; writing them here would overwrite the versions
+# that enforce branding + the software QML backend at runtime.
 
 cat > /usr/share/applications/openbruma-installer-guided.desktop <<'EOF'
 [Desktop Entry]
