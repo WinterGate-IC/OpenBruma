@@ -56,17 +56,16 @@ Releases are published on the
 
 Each release provides:
 
-- `openbruma-amd64.hybrid.iso` — the full ISO (when the upload allows it), and
-- `openbruma-amd64.hybrid.iso.part-*` + `SHA256SUMS.parts` + `REASSEMBLE.txt`
-  as a fallback split into 250 MB pieces.
+- `openbruma-amd64.hybrid.iso.part-00` and `.part-01` — the ISO split in two
+  (GitHub limits each release asset to 2 GiB, and the image is ~2.5 GB), plus
+- `SHA256SUMS.debian`, `SHA256SUMS.parts` and `REASSEMBLE.txt`.
 
 Verify before booting:
 
 ```sh
-sha256sum -c SHA256SUMS.debian     # full ISO
-# or, for split downloads:
 cat openbruma-amd64.hybrid.iso.part-* > openbruma-amd64.hybrid.iso
 sha256sum -c SHA256SUMS.parts
+sha256sum openbruma-amd64.hybrid.iso   # see SHA256SUMS.debian
 ```
 
 Write the image with `dd`, balenaEtcher, Rufus (DD mode) or Ventoy. The ISO is
