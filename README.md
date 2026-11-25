@@ -56,8 +56,8 @@ Releases are published on the
 
 Each release provides:
 
-- `openbruma-amd64.hybrid.iso.part-00` and `.part-01` — the ISO split in two
-  (GitHub limits each release asset to 2 GiB, and the image is ~2.5 GB), plus
+- `openbruma-amd64.hybrid.iso.part-*` — the ISO split into 250 MB parts
+  (GitHub caps each release asset at 2 GiB and the image is ~2.5 GB), plus
 - `SHA256SUMS.debian`, `SHA256SUMS.parts` and `REASSEMBLE.txt`.
 
 Verify before booting:

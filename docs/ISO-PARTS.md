@@ -5,8 +5,7 @@ Releases publish the full ISO when the upload succeeds, and always provide a
 
 ## Files
 
-- `openbruma-amd64.hybrid.iso` (full image, when available)
-- `openbruma-amd64.hybrid.iso.part-aa` … (split fallback)
+- `openbruma-amd64.hybrid.iso.part-*` (250 MB parts)
 - `SHA256SUMS.debian` — checksum of the full ISO
 - `SHA256SUMS.parts` — per-part checksums
 - `REASSEMBLE.txt` — short instructions
