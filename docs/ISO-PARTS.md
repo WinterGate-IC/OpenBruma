@@ -11,7 +11,7 @@ Releases publish the full ISO when the upload succeeds, and always provide a
 - `REASSEMBLE.txt` — short instructions
 
 Final ISO SHA-256:
-`c5f084837fce82b40a6a8ce2e294c85c53c3d51154a08fe76ff63947c04abd6c`
+`ae5c93bdbbcabf5e72b61d7896984a695b656683cb14db9c1c670ab65a579008`
 
 ## Reassemble (Linux/macOS)
 
@@ -32,4 +32,4 @@ Get-FileHash openbruma-amd64.hybrid.iso -Algorithm SHA256
 ```
 
 The final hash must match
-`c5f084837fce82b40a6a8ce2e294c85c53c3d51154a08fe76ff63947c04abd6c`.
+`ae5c93bdbbcabf5e72b61d7896984a695b656683cb14db9c1c670ab65a579008`.
