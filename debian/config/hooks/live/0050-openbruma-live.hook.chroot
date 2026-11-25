@@ -24,7 +24,9 @@ BUG_REPORT_URL="https://github.com/WinterGate-IC/OpenBruma/issues"
 EOF
 ln -sf ../usr/lib/os-release /etc/lsb-release 2>/dev/null || true
 
-# Live user (created by live-config username=openbruma at boot); create for build-time convenience
+# Live user is baked into the image so the documented credentials and the
+# pre-seeded home work offline. Calamares forbids reusing this name on install
+# (users.conf forbiddenLoginNames) and the install cleanup removes it.
 if ! id openbruma >/dev/null 2>&1; then
   useradd -m -G sudo,audio,video,netdev -s /bin/bash openbruma || true
 fi
@@ -65,6 +67,10 @@ EOF
 systemctl enable NetworkManager || true
 systemctl enable lightdm || true
 systemctl enable bluetooth || true
+
+# The picom package ships its own autostart entry. Running it next to xfwm's
+# compositor causes black/flickering repaints on VMs, so the glow is opt-in.
+rm -f /etc/xdg/autostart/picom.desktop
 systemctl enable earlyoom || true
 systemctl enable preload || true
 systemctl enable tuned || true
@@ -267,10 +273,41 @@ basicSetup: false
 sysconfigSetup: false
 EOF
 
+cat > /etc/calamares/modules/users.conf <<'EOF'
+---
+userGroup: users
+defaultGroups:
+  - cdrom
+  - floppy
+  - sudo
+  - audio
+  - dip
+  - video
+  - plugdev
+  - netdev
+  - lpadmin
+  - scanner
+  - bluetooth
+autologinGroup: autologin
+sudoersGroup: sudo
+setRootPassword: false
+# The live account must not be reused for the installed system, otherwise the
+# install cleanup (shellprocess@livecleanup) would delete the new user.
+user:
+  shell: /bin/bash
+  forbidden_names: [ root, openbruma, debian, user ]
+passwordRequirements:
+  nonempty: true
+  minLength: -1
+  maxLength: -1
+  libpwquality:
+    - minlen=0
+    - minclass=0
+EOF
+
 # Security: the live session account (password openbruma, passwordless sudo)
 # must not survive into an installed system. Remove it during installation.
-cat > /etc/calamares/modules/shellprocess-livecleanup.conf <<'EOF'
----
+cat > /etc/calamares/modules/shellprocess-livecleanup.conf <<'EOF'---
 dontChroot: false
 timeout: 30
 script:
@@ -281,7 +318,13 @@ script:
 EOF
 
 if [ -f /etc/calamares/settings.conf ] && ! grep -q 'shellprocess@livecleanup' /etc/calamares/settings.conf; then
-  sed -i '/^- exec:/,/^- show:/ s/^  - users$/  - users\n  - shellprocess@livecleanup/' /etc/calamares/settings.conf || true
+  awk '
+    /^- exec:/ { inexec = 1 }
+    /^- show:/ { inexec = 0 }
+    { print }
+    inexec && /^  - users$/ { print "  - shellprocess@livecleanup" }
+  ' /etc/calamares/settings.conf > /etc/calamares/settings.conf.new \
+    && mv /etc/calamares/settings.conf.new /etc/calamares/settings.conf
 fi
 
 # Ensure the default Calamares settings use OpenBruma branding
@@ -296,6 +339,11 @@ fi
 
 # Refresh font cache for the OpenBruma fonts
 fc-cache -f >/dev/null 2>&1 || true
+# Whisker reads xfce-applications.menu, which does not merge applications-merged;
+# inject the OSINT/OPSEC/WIC categories so they appear in the application menu.
+if [ -f /usr/share/openbruma/patch-xfce-menu.py ]; then
+  python3 /usr/share/openbruma/patch-xfce-menu.py || true
+fi
 # Refresh the icon cache so the branded Whisker icon resolves immediately
 gtk-update-icon-cache -f -t /usr/share/icons/hicolor >/dev/null 2>&1 || true
 chmod +x /usr/local/bin/openbruma-wic-app 2>/dev/null || true

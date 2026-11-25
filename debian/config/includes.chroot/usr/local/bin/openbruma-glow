@@ -1,0 +1,26 @@
+#!/bin/sh
+# Toggle the optional neon window glow (picom). Off by default because some
+# virtual machines and older GPUs render picom shadows incorrectly.
+set -u
+CONF="${XDG_CONFIG_HOME:-$HOME/.config}/picom/picom.conf"
+[ -f "$CONF" ] || CONF=/etc/xdg/picom.conf
+
+case "${1:-status}" in
+  on)
+    pkill -x picom 2>/dev/null || true
+    sleep 0.3
+    picom --config "$CONF" >/dev/null 2>&1 &
+    notify-send -i openbruma-menu "OpenBruma" "Neon window glow enabled" 2>/dev/null || true
+    ;;
+  off)
+    pkill -x picom 2>/dev/null || true
+    notify-send -i openbruma-menu "OpenBruma" "Neon window glow disabled" 2>/dev/null || true
+    ;;
+  status)
+    if pgrep -x picom >/dev/null 2>&1; then echo "on"; else echo "off"; fi
+    ;;
+  *)
+    echo "usage: $0 {on|off|status}" >&2
+    exit 2
+    ;;
+esac

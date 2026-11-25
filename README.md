@@ -12,6 +12,16 @@ XFCE desktop with a neon identity, a live wallpaper and the tools already
 installed and organised. Nothing has to be set up by hand: Wi-Fi, Bluetooth,
 audio, browsers, office apps and the OSINT/OPSEC suites are there on first boot.
 
+![OpenBruma desktop](docs/screenshots/desktop.png)
+
+| Application menu | Terminal |
+| --- | --- |
+| ![Menu](docs/screenshots/menu.png) | ![Terminal](docs/screenshots/terminal.png) |
+
+| Installer welcome | Installer partitions |
+| --- | --- |
+| ![Installer welcome](docs/screenshots/installer-welcome.png) | ![Installer partitions](docs/screenshots/installer-partitions.png) |
+
 > OpenBruma is a **distribution**, not a from-scratch operating system. It is
 > built on Debian 13 ("trixie") and uses Debian's kernel, drivers and packages.
 
@@ -21,8 +31,8 @@ audio, browsers, office apps and the OSINT/OPSEC suites are there on first boot.
 
 | Area | What you get |
 | --- | --- |
-| **Desktop** | XFCE 4.20, single neon top bar, Arc-Dark + Papirus-Dark, dark by default (light theme available in *Settings → Appearance*) |
-| **Live wallpapers** | Three dimmed animated backgrounds (Aurora Drift, Data Rain, Ember Pulse) with the official OpenBruma logo; Aurora Drift is the default |
+| **Desktop** | XFCE 4.20, single neon top bar, custom themed application menu, Arc-Dark + Papirus-Dark, dark by default (light theme available in *Settings → Appearance*) |
+| **Live wallpapers** | Three dimmed animated backgrounds (Aurora Drift, Data Rain, Ember Pulse) available as opt-in presets; the default is the static neon wallpaper (most reliable on virtual machines and older GPUs) |
 | **Theme presets** | Neo-Noir, Synthwave Violet, Crimson Circuit, Cyber-Lime and Ghost Protocol via *OpenBruma Themes* |
 | **Installer** | Calamares: Guided (erase disk), Custom (manual partitioning) and USB / Virtual Machine |
 | **Network** | NetworkManager + Wi-Fi applet, Blueman, firmware for Intel / Realtek / Atheros / Broadcom, radios unblocked at login |

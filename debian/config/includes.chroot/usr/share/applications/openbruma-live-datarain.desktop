@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Live Wallpaper: Data Rain
+Comment=Optional animated background (may be slow on virtual machines)
+Exec=/usr/local/bin/openbruma-live-wallpaper start data-rain
+Icon=openbruma-logo
+Terminal=false
+Categories=System;

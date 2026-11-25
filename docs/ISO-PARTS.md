@@ -1,14 +1,18 @@
-# Downloading the split ISO
+# Downloading the ISO
 
-The v0.2.0 GitHub Release publishes the ISO in 250 MB parts because the
-upload connection to GitHub is limited. Reassemble them before use.
+Releases publish the full ISO when the upload succeeds, and always provide a
+250 MB split copy as a fallback. Reassemble the parts before use.
 
 ## Files
 
-- `openbruma-amd64.hybrid.iso.part-aa` … `part-ai`
+- `openbruma-amd64.hybrid.iso` (full image, when available)
+- `openbruma-amd64.hybrid.iso.part-aa` … (split fallback)
+- `SHA256SUMS.debian` — checksum of the full ISO
 - `SHA256SUMS.parts` — per-part checksums
-- Final ISO SHA-256:
-  `a9c8bf0329e40a88a0777f4fac0b4f92b2169fdc82cd7ed82d9228d206b7503d`
+- `REASSEMBLE.txt` — short instructions
+
+Final ISO SHA-256:
+`c5f084837fce82b40a6a8ce2e294c85c53c3d51154a08fe76ff63947c04abd6c`
 
 ## Reassemble (Linux/macOS)
 
@@ -29,4 +33,4 @@ Get-FileHash openbruma-amd64.hybrid.iso -Algorithm SHA256
 ```
 
 The final hash must match
-`a9c8bf0329e40a88a0777f4fac0b4f92b2169fdc82cd7ed82d9228d206b7503d`.
+`c5f084837fce82b40a6a8ce2e294c85c53c3d51154a08fe76ff63947c04abd6c`.

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=OpenBruma Menu
+Comment=Application menu
+Exec=/usr/local/bin/openbruma-menu
+Icon=openbruma-logo
+Terminal=false
+NoDisplay=false
+StartupNotify=false
+Categories=System;

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Enable Neon Window Glow
+Comment=Optional accent-coloured window glow (may be slow on VMs)
+Exec=/usr/local/bin/openbruma-glow on
+Icon=preferences-desktop-theme
+Terminal=false
+Categories=System;Settings;

@@ -15,10 +15,10 @@ declare -A ACCENT=(
   [ghost]="#9fe8ff"
 )
 declare -A LABEL=(
-  [neo-noir]="Neo-Noir (default, live aurora)"
+  [neo-noir]="Neo-Noir (default)"
   [synthwave]="Synthwave Violet (static, magenta glow)"
   [crimson]="Crimson Circuit (static, red glow)"
-  [lime]="Cyber-Lime (live data rain)"
+  [lime]="Cyber-Lime (static, lime glow)"
   [ghost]="Ghost Protocol (static, ice glow)"
 )
 declare -A WALL=(
@@ -29,10 +29,10 @@ declare -A WALL=(
   [ghost]="/usr/share/backgrounds/openbruma/openbruma-ghost.png"
 )
 declare -A LIVE=(
-  [neo-noir]="aurora-drift"
+  [neo-noir]=""
   [synthwave]=""
   [crimson]=""
-  [lime]="data-rain"
+  [lime]=""
   [ghost]=""
 )
 
@@ -47,13 +47,18 @@ apply_theme() {
   sed "s|@@ACCENT@@|$accent|g" /usr/share/openbruma/themes/panel.css \
     >"${XDG_CONFIG_HOME:-$HOME/.config}/gtk-3.0/gtk.css"
 
-  # window glow colour (picom)
+  # window glow configuration (started only on demand via openbruma-glow)
   pconf="${XDG_CONFIG_HOME:-$HOME/.config}/picom/picom.conf"
   mkdir -p "$(dirname "$pconf")"
   if [ -f /usr/share/openbruma/themes/picom.conf ]; then
     sed "s|@@ACCENT@@|$accent|g" /usr/share/openbruma/themes/picom.conf >"$pconf"
-    pkill -x picom 2>/dev/null || true
-    (sleep 0.4; picom --config "$pconf" >/dev/null 2>&1 &) >/dev/null 2>&1 || true
+  fi
+
+  # menu accent CSS for the OpenBruma app menu
+  mconf="${XDG_CONFIG_HOME:-$HOME/.config}/openbruma"
+  mkdir -p "$mconf"
+  if [ -f /usr/share/openbruma/themes/menu.css.in ]; then
+    sed "s|@@ACCENT@@|$accent|g" /usr/share/openbruma/themes/menu.css.in >"$mconf/menu.css"
   fi
 
   # wallpaper: live clip or static image

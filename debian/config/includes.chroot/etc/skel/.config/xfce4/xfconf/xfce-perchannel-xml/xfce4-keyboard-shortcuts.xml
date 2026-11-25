@@ -5,6 +5,7 @@
     <property name="custom" type="empty">
       <property name="&lt;Primary&gt;&lt;Alt&gt;t" type="string" value="xfce4-terminal"/>
       <property name="&lt;Primary&gt;&lt;Alt&gt;Delete" type="string" value="xfce4-session-logout --logout"/>
+      <property name="&lt;Super&gt;" type="string" value="openbruma-menu"/>
     </property>
   </property>
 </channel>

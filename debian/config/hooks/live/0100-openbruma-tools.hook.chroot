@@ -76,6 +76,9 @@ if [ ! -x /opt/tor-browser/Browser/start-tor-browser ]; then
     if [ -n "$found" ]; then
       tbroot="$(dirname "$(dirname "$found")")"
       [ "$tbroot" = "/opt/tor-browser" ] || ln -sfn "$tbroot" /opt/tor-browser
+      # Tor Browser ships root-only perms; normal users must be able to run it.
+      chmod -R a+rX /opt/tor-browser 2>/dev/null || true
+      chmod 0755 "$found" 2>/dev/null || true
       say "tor browser ${TB_VER} installed"
     fi
   else
@@ -185,7 +188,7 @@ mk_opsec macchanger "MAC Changer" "Change a network interface MAC address" "/usr
 mk_opsec secure-delete "Secure Delete" "Securely wipe files (srm)" "/usr/local/bin/openbruma-terminal srm --help" "utilities-terminal" false
 
 # GUI OPSEC apps that ship desktop files of their own
-for d in onionshare keepassxc bleachbit gpa; do
+for d in onionshare keepassxc bleachbit; do
   if [ -f "/usr/share/applications/$d.desktop" ]; then
     sed -i 's/^Categories=.*/Categories=X-OPSEC;Utility;Network;/' "/usr/share/applications/$d.desktop" || true
   fi

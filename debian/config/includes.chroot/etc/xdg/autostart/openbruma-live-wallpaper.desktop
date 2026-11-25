@@ -1,9 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=OpenBruma Live Wallpaper
-Comment=Dimmed animated desktop background
-Exec=/usr/local/bin/openbruma-live-wallpaper start
-Hidden=false
-NoDisplay=true
-X-GNOME-Autostart-enabled=true
-OnlyShowIn=XFCE;

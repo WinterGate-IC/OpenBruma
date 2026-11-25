@@ -3,11 +3,13 @@
 ## Debian edition (current)
 
 openbruma-amd64.hybrid.iso
-SHA-256: a9c8bf0329e40a88a0777f4fac0b4f92b2169fdc82cd7ed82d9228d206b7503d
-Size: ~2.0 GB
+SHA-256: c5f084837fce82b40a6a8ce2e294c85c53c3d51154a08fe76ff63947c04abd6c
+Size: ~2.5 GB
 Base: Debian 13 (trixie) x86_64
-Installer: Calamares — Guided (erase disk) and Custom (manual partitioning)
-Desktop: XFCE + LightDM, branded Plymouth boot splash
+Installer: Calamares — Guided, Custom and USB/Virtual Machine
+Desktop: XFCE + LightDM, OpenBruma neon theme, custom application menu
+Root account: root / openbruma
+Live account: openbruma / openbruma
 
 ## Arch prototype (legacy/reference)
 

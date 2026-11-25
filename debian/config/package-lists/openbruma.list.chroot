@@ -131,7 +131,6 @@ macchanger
 secure-delete
 keepassxc
 bleachbit
-gpa
 openvpn
 wireguard-tools
 cryptsetup
@@ -172,4 +171,11 @@ plymouth
 plymouth-themes
 
 x11-utils
+
+
+xfce4-indicator-plugin
+
+
+python3-gi
+gir1.2-gtk-3.0
 

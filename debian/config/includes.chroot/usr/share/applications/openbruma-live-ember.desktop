@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Live Wallpaper: Ember Pulse
+Comment=Optional animated background (may be slow on virtual machines)
+Exec=/usr/local/bin/openbruma-live-wallpaper start ember-pulse
+Icon=openbruma-logo
+Terminal=false
+Categories=System;

@@ -57,3 +57,62 @@
 .xfce4-panel menuitem {
   padding: 4px 8px;
 }
+
+/* ---- Custom Whisker application menu ---- */
+#whisker-menu {
+  background-color: #0a1512;
+  border: 1px solid #2ee6a0;
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 0 18px rgba(0, 0, 0, 0.65);
+}
+
+#whisker-menu entry {
+  background-color: #06100d;
+  color: #e2fdf2;
+  border: 1px solid alpha(#2ee6a0, 0.45);
+  border-radius: 9px;
+  padding: 6px 10px;
+  caret-color: #2ee6a0;
+}
+
+#whisker-menu .category-button {
+  border-radius: 8px;
+  padding: 5px 10px;
+  color: #cfe9dd;
+}
+
+#whisker-menu .category-button:checked,
+#whisker-menu .category-button:active {
+  background-color: alpha(#2ee6a0, 0.18);
+  color: #2ee6a0;
+  box-shadow: inset 2px 0 0 #2ee6a0;
+}
+
+#whisker-menu .application-button {
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+
+#whisker-menu .application-button:hover {
+  background-color: alpha(#2ee6a0, 0.14);
+}
+
+#whisker-menu .application-button-label {
+  color: #dcf7ec;
+}
+
+#whisker-menu .command-button {
+  border-radius: 7px;
+  padding: 3px;
+}
+
+#whisker-menu .command-button:hover {
+  background-color: alpha(#2ee6a0, 0.16);
+}
+
+#whisker-menu .profile-button {
+  border-radius: 9px;
+  padding: 4px 8px;
+  color: #2ee6a0;
+}

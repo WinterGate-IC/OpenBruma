@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Stop Live Wallpaper
+Comment=Return to the static OpenBruma wallpaper
+Exec=/usr/local/bin/openbruma-live-wallpaper stop
+Icon=openbruma-logo
+Terminal=false
+Categories=System;

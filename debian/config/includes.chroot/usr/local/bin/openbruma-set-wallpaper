@@ -41,3 +41,9 @@ xfconf-query -c xfce4-desktop -l 2>/dev/null \
   | while IFS= read -r p; do
       [ -n "$p" ] && xfconf-query -c xfce4-desktop -p "$p" -s true 2>/dev/null || true
     done
+
+# Hide desktop icons so the wallpaper/logo is unobstructed. Done at runtime
+# because an invalid desktop-icons block in the static XML made xfdesktop
+# fall back to its stock wallpaper.
+xfconf-query -c xfce4-desktop -p /desktop-icons/style -n -t int -s 0 2>/dev/null \
+  || xfconf-query -c xfce4-desktop -p /desktop-icons/style -s 0 2>/dev/null || true

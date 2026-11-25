@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Live Wallpaper: Aurora Drift
+Comment=Optional animated background (may be slow on virtual machines)
+Exec=/usr/local/bin/openbruma-live-wallpaper start aurora-drift
+Icon=openbruma-logo
+Terminal=false
+Categories=System;

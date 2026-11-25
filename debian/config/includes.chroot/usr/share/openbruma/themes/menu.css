@@ -1,0 +1,85 @@
+#openbruma-menu {
+  background-color: #08120f;
+  border: 1px solid #2ee6a0;
+  border-radius: 14px;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.7);
+}
+
+#menu-title {
+  color: #2ee6a0;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 13pt;
+}
+
+#openbruma-menu searchbar,
+#openbruma-menu entry {
+  background-color: #06100d;
+  color: #eafff7;
+  border: 1px solid alpha(#2ee6a0, 0.45);
+  border-radius: 9px;
+  padding: 6px 10px;
+  caret-color: #2ee6a0;
+}
+
+#menu-categories {
+  background-color: transparent;
+}
+
+#menu-categories row {
+  border-radius: 9px;
+  padding: 6px 8px;
+  margin: 1px 0;
+}
+
+#menu-categories row:hover {
+  background-color: alpha(#2ee6a0, 0.10);
+}
+
+#menu-categories row:selected {
+  background-color: alpha(#2ee6a0, 0.18);
+  box-shadow: inset 2px 0 0 #2ee6a0;
+}
+
+#menu-categories label {
+  color: #d8f4e8;
+}
+
+#menu-apps {
+  background-color: transparent;
+}
+
+#menu-apps row {
+  border-radius: 9px;
+  padding: 6px 8px;
+  margin: 1px 0;
+}
+
+#menu-apps row:hover {
+  background-color: alpha(#2ee6a0, 0.10);
+}
+
+#menu-apps row:selected {
+  background-color: alpha(#2ee6a0, 0.16);
+}
+
+#app-title {
+  color: #eafff7;
+  font-weight: 600;
+}
+
+#app-comment {
+  color: #8fb3a6;
+  font-size: 90%;
+}
+
+#menu-empty {
+  color: #8fb3a6;
+  padding: 20px;
+}
+
+#menu-footer {
+  color: #5f8378;
+  font-size: 85%;
+  padding: 2px 6px;
+}

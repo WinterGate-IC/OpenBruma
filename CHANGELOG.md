@@ -7,8 +7,10 @@
   8 branded 4K wallpapers (Neo-Noir, Electric Blue, Violet Forge, Ember,
   Cyber-Lime, Crimson Gate, Ghost Protocol, Aurora), matching login and GRUB art.
 - **Three live (animated) wallpapers** — Aurora Drift, Data Rain and Ember
-  Pulse — rendered with the official OpenBruma logo, dimmed so the desktop
-  stays readable. Aurora Drift is the default on live and installed systems.
+  Pulse — rendered with the official OpenBruma logo and dimmed so the desktop
+  stays readable. They are opt-in (Application menu → System); the default is
+  the static neon wallpaper, which is the most reliable option on virtual
+  machines and older GPUs.
 - **Neon desktop**: picom compositor with a per-theme window glow, gradient
   panel with accent line and active-window underline, and five switchable
   presets (Neo-Noir, Synthwave, Crimson, Cyber-Lime, Ghost) in *OpenBruma
@@ -16,6 +18,10 @@
 - **Official brand artwork**: the OpenBruma logo is the menu button and About
   icon; the WIC shield is used for the WIC Apps category and every WIC app
   entry.
+- **Custom OpenBruma application menu** replacing Whisker: fully themed GTK
+  launcher with Favorites, OSINT & Investigation, OPSEC, WIC Apps and standard
+  categories, live search, keyboard navigation and a toggle-on-second-click
+  behaviour.
 - **Three installer modes**: Guided (erase disk), Custom (manual) and a new
   USB / Virtual Machine guided mode with explicit target selection.
 - **OSINT & Investigation menu**: Maigret, Holehe, Blackbird, Sherlock, h8mail,
@@ -47,6 +53,18 @@
 - Fixed missing installer entries on the live desktop.
 - Fixed the guided installer failing to start (missing qml application data).
 - Fixed the Arch-style bootloader paths that would produce unbootable installs.
+- **Rendering stability:** the desktop runs uncomposited by default (the most
+  reliable choice on VirtualBox/VMware without 3D acceleration); picom is only
+  started by the explicit *Enable Neon Window Glow* toggle. The packaged picom
+  autostart, which competed with the window manager and caused black/flickering
+  repaints, is removed.
+- **Tray icons:** added the XFCE indicator plugin so NetworkManager and Blueman
+  (StatusNotifier) icons appear next to the legacy tray.
+- Terminal opens with a branded ASCII/OpenBruma + WIC banner and live system
+  metrics; prompt glyph fixed.
+- Removed duplicate NetworkManager/Blueman autostart entries.
+- Pinned apps on the bar are now three separate launchers (XFCE collapsed a
+  multi-item launcher into a dropdown).
 - Safe binary-asset handling in the build tooling (no CRLF corruption of PNG/TTF).
 
 ## [0.2.0] - 2026-11-23

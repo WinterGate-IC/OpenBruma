@@ -1,0 +1,9 @@
+[Configuration]
+MiscDefaultGeometry=120x34
+MiscAlwaysShowTabs=FALSE
+MiscBell=FALSE
+MiscSlimTabs=FALSE
+MiscHighlightUrls=TRUE
+MiscCursorBlinks=TRUE
+FontName=Share Tech Mono 11
+MiscMouseAutohide=FALSE
