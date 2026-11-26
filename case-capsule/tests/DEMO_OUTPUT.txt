@@ -1,0 +1,49 @@
+OpenBruma Case Capsule - demo verification output
+(gocryptfs backend, Debian 13, 2026-11-26)
+
+$ bruma case new "Demo - example.com reconnaissance" --operator "demo operator" --scope "non-sensitive public example"
+Created case case-20261126-143426-c08ee9
+Backend: gocryptfs
+Open it with: bruma case open case-20261126-143426-c08ee9
+
+$ bruma case open case-20261126-143426-c08ee9
+Opened case case-20261126-143426-c08ee9 (gocryptfs)
+Vault: /home/demo/.local/share/bruma/cases/case-20261126-143426-c08ee9/mnt
+Start the logged terminal with: bruma shell
+
+$ bruma evidence add /tmp/bruma-demo-artifact.txt --notes "harmless local file"
+Registered evidence /tmp/bruma-demo-artifact.txt
+SHA-256: 786bda1ee041f80ee63fff5ab74cf562e43d3d76ee00f18550302c94c5e00bfc
+
+$ bruma note "Example note: verify chain after seal"
+Note recorded
+
+$ bruma run -- whois example.com
+... (captured to the case)
+
+$ bruma case seal
+Sealed case case-20261126-143426-c08ee9
+Events:   5
+Artifacts:3
+Root:     16a6227b9796cb12cb407d2daff49d9cdf0f107f7d4da60ad74eeba278f6f39d
+Bundle:   /home/demo/OpenBruma-Cases/case-20261126-143426-c08ee9-sealed-20261126-143430.tar.xz.gpg
+
+$ bruma case verify case-20261126-143426-c08ee9-sealed-20261126-143430.tar.xz.gpg
+Verify: PASS
+Case:   case-20261126-143426-c08ee9
+Events: 5
+Root:   16a6227b9796cb12cb407d2daff49d9cdf0f107f7d4da60ad74eeba278f6f39d
+
+Tamper test:
+  sqlite3 .../mnt/case.db "UPDATE events SET payload='{\"text\":\"tampered\"}' WHERE type='note';"
+  $ bruma case status
+  Chain:    BROKEN
+  $ bruma case seal
+  bruma: refusing to seal: hash chain is broken:
+    ! event <id> hash mismatch
+
+Wrong passphrase:
+  $ bruma case open <case-id>
+  bruma: cannot open case (wrong passphrase or mount problem): ...
+
+Acceptance suite: ALL TESTS PASSED
