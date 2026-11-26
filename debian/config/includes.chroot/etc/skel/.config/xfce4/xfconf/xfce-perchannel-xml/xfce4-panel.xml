@@ -26,6 +26,7 @@
         <value type="int" value="12"/>
         <value type="int" value="13"/>
         <value type="int" value="14"/>
+        <value type="int" value="15"/>
       </property>
     </property>
   </property>
@@ -90,5 +91,10 @@
       </property>
     </property>
     <property name="plugin-14" type="string" value="indicator"/>
+    <property name="plugin-15" type="string" value="launcher">
+      <property name="items" type="array">
+        <value type="string" value="openbruma-case-capsule.desktop"/>
+      </property>
+    </property>
   </property>
 </channel>

@@ -12,11 +12,11 @@ EOF
 
 cat > /etc/os-release <<'EOF'
 NAME="OpenBruma"
-PRETTY_NAME="OpenBruma OSINT Edition 0.3"
+PRETTY_NAME="OpenBruma OSINT Edition 0.4"
 ID=openbruma
 ID_LIKE=debian
-VERSION_ID="0.3"
-VERSION="0.3 (trixie)"
+VERSION_ID="0.4"
+VERSION="0.4 (trixie)"
 VERSION_CODENAME=trixie
 HOME_URL="https://github.com/WinterGate-IC/OpenBruma"
 SUPPORT_URL="https://github.com/WinterGate-IC/OpenBruma/issues"

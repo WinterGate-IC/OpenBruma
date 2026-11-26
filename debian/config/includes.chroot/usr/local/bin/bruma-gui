@@ -1,0 +1,3 @@
+#!/bin/sh
+# OpenBruma Case Capsule graphical front-end
+exec python3 /usr/lib/case-capsule/bruma_gui.py "$@"

@@ -1,5 +1,34 @@
 ﻿# Changelog
 
+## [0.4.0] - 2026-11-26
+
+### Added
+- **OpenBruma Case Capsule** — the headline feature: a first-class, rootless,
+  encrypted investigation workspace with a tamper-evident chain of custody.
+  - `bruma` CLI: `case new/open/close/status/list/seal/verify/export`,
+    `shell`, `run`, `note`, `evidence add`.
+  - `gocryptfs` encrypted vaults under `~/.local/share/bruma` (encrypted
+    archive fallback when `gocryptfs` is unavailable; plaintext workdirs are
+    wiped on close/seal).
+  - SQLite case database (`cases`, `events`, `artifacts`, `notes`, `tool_runs`,
+    `seals`) with `event_hash = SHA256(canonical_json(event) + previous_hash)`.
+  - Opt-in logged case terminal with case-aware tool wrappers, command/exit/
+    duration/cwd capture and `script(1)` transcripts. Normal terminals are not
+    instrumented.
+  - Sealed bundles with `case.json`, `timeline.json`, `artifacts.json`,
+    `tool_runs.json`, `notes.json`, self-contained `report.html`,
+    `SHA256SUMS`, optional GPG signature, encrypted archive, and vault unmount.
+  - `case verify` detects event deletion/reordering/modification and artifact
+    or checksum changes.
+  - GTK front-end (`Case Capsule` in Applications → System), panel launcher,
+    passphrase handling that never stores or exports the secret.
+  - Docs: `docs/CASE_CAPSULE.md` with schema, chain math, CLI and limitations.
+  - Acceptance tests in `case-capsule/tests/run_tests.sh`.
+
+### Changed
+- Version, `os-release` and Calamares branding updated to 0.4.0.
+- Package set adds `gocryptfs`, `age`, `sqlite3`, `fuse3`, `zstd`, `gnupg`.
+
 ## [0.3.0] - 2026-11-24
 
 ### Added

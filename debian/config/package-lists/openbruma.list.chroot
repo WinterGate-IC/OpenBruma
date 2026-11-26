@@ -179,3 +179,12 @@ xfce4-indicator-plugin
 python3-gi
 gir1.2-gtk-3.0
 
+
+# Case Capsule
+gocryptfs
+age
+sqlite3
+zstd
+fuse3
+gnupg
+

@@ -37,6 +37,7 @@ audio, browsers, office apps and the OSINT/OPSEC suites are there on first boot.
 | **Installer** | Calamares: Guided (erase disk), Custom (manual partitioning) and USB / Virtual Machine |
 | **Network** | NetworkManager + Wi-Fi applet, Blueman, firmware for Intel / Realtek / Atheros / Broadcom, radios unblocked at login |
 | **Everyday apps** | Firefox ESR (pinned), Thunderbird, LibreOffice, Parole media player, Ristretto, GParted, archive tools |
+| **Case Capsule** | Encrypted case workspace with a logged case terminal, automatic artifact hashing, SHA-256 chain of custody, sealed signed report export and verification (`bruma`) |
 | **OSINT & Investigation** | Maigret, Holehe, Blackbird, Sherlock, h8mail, Social Analyzer, Toutatis, Instaloader, waymore, SploitScan, plus nmap, masscan, whois, dnsrecon, gobuster, Wireshark/tshark, exiftool, mat2, binwalk, SleuthKit and forensics-all |
 | **OPSEC** | AnonSurf (CLI and graphical), bundled Tor Browser, Tor + torsocks, Nyx, OnionShare, Proxychains, KeePassXC, BleachBit, MAT2, MAC Changer, secure-delete |
 | **Dev / scripting** | Python 3 with pip, venv and pipx; an isolated `/opt/osint` environment with normal command wrappers |
@@ -111,6 +112,28 @@ public notice for the collective's operating rules.
 OPSEC tooling (Tor, AnonSurf, Proxychains) is included for privacy and
 research; you are responsible for complying with the law where you live and
 with the terms of the services you use.
+
+---
+
+## Case Capsule (0.4.0 headline feature)
+
+![Case Capsule is part of the desktop](docs/screenshots/desktop.png)
+
+Every case gets its own encrypted vault and a tamper-evident chain of custody:
+
+- `bruma case new "Title"` creates an encrypted case (`gocryptfs`);
+- `bruma case open <id>` mounts it and marks the active case;
+- `bruma shell` opens a logged case terminal (commands, exit codes, duration,
+  transcript) and adds case-aware wrappers for the OSINT/forensic tools — only
+  inside that shell;
+- `bruma evidence add <file-or-url>`, `bruma note`, `bruma run -- <cmd>`;
+- `bruma case seal` verifies the chain, writes `case.json`, `timeline.json`,
+  `report.html`, `SHA256SUMS`, optionally GPG-signs, encrypts the bundle and
+  unmounts the vault;
+- `bruma case verify <bundle>` recomputes every event hash and artifact hash.
+
+Full documentation, data model and limitations: [`docs/CASE_CAPSULE.md`](docs/CASE_CAPSULE.md).
+Case Capsule is tamper-evident documentation, not a certified forensic product.
 
 ---
 

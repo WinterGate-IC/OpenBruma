@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Case Capsule
+Comment=Encrypted case workspace with a tamper-evident chain of custody
+Exec=/usr/local/bin/bruma-gui
+Icon=security-high
+Terminal=false
+Categories=System;X-OPSEC;
+Keywords=case;evidence;forensics;osint;custody;

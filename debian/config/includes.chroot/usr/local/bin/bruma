@@ -1,0 +1,3 @@
+#!/bin/sh
+# OpenBruma Case Capsule CLI
+exec python3 /usr/lib/case-capsule/bruma.py "$@"
